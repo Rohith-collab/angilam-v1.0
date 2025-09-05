@@ -189,7 +189,7 @@ export const handleChat: RequestHandler = async (req, res) => {
     // Check for demo mode
     const isDemoMode =
       process.env.DEMO_MODE === "true" ||
-      (!process.env.AZURE_OPENAI_API_KEY && !process.env.OPENAI_API_KEY);
+      (!azureApiKey && !openaiApiKey);
 
     // If in demo mode, immediately return fallback response
     if (isDemoMode) {
