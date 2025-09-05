@@ -83,7 +83,7 @@ const PlaceholderPage = ({
 );
 
 const App = () => (
-  <ThemeProvider defaultTheme="system" storageKey="aangilam-ui-theme">
+  <ThemeProvider defaultTheme="light" storageKey="aangilam-ui-theme">
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <Toaster />
