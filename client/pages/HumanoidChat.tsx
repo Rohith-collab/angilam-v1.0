@@ -261,6 +261,30 @@ export default function HumanoidChat() {
   const [userPreferences, setUserPreferences] = useState<any>(null);
   const [selectedVoice, setSelectedVoice] = useState<string>("narenn");
 
+  // Helper to derive avatar URL from preferences
+  const getAvatarUrl = () => {
+    try {
+      const saved = userPreferences ||
+        (typeof window !== 'undefined' && localStorage.getItem('aangilam_preferences')
+          ? JSON.parse(localStorage.getItem('aangilam_preferences') || '{}')
+          : null);
+      const voice = saved?.voice || selectedVoice || 'narenn';
+      const configs: Record<string, { avatar: string }> = {
+        narenn: {
+          avatar:
+            'https://cdn.builder.io/api/v1/image/assets%2F9858961368ae4103b4a3c41674c30c55%2F8443882ce2364978aae94fc75f7b88b7?format=webp&width=800',
+        },
+        sarah: {
+          avatar:
+            'https://cdn.builder.io/api/v1/image/assets%2F9858961368ae4103b4a3c41674c30c55%2F0fa5d23e41994bfd8eea5cb344721192?format=webp&width=800',
+        },
+      };
+      return configs[voice]?.avatar || configs.narenn.avatar;
+    } catch (e) {
+      return 'https://cdn.builder.io/api/v1/image/assets%2F9858961368ae4103b4a3c41674c30c55%2F8443882ce2364978aae94fc75f7b88b7?format=webp&width=800';
+    }
+  };
+
   // Enhanced system prompt for humanoid conversations
   const getSystemPrompt = () => {
     return `You are an advanced AI humanoid tutor with a photorealistic human appearance and natural conversational abilities. You can discuss any topic like ChatGPT but with enhanced emotional intelligence and human-like interaction.
@@ -809,83 +833,26 @@ RESPONSE FORMAT:
 
         {/* Interactive Avatar Section */}
         <div className="relative h-64 overflow-hidden">
-          {/* Avatar Background with Gradient Overlay */}
-          <div className="absolute inset-0">
-            <AdvancedHumanoidAvatar
-              speaking={speaking || isLoading}
-              isLoading={isLoading}
-              personality="professional"
-              className="w-full h-full scale-110"
-            />
-            {/* Interactive Overlay */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-
-            {/* Floating Status Indicators */}
-            <div className="absolute top-4 left-4 right-4 flex justify-between items-start">
-              {/* AI Status */}
-              <div className="bg-black/40 backdrop-blur-md rounded-2xl px-3 py-2 border border-white/10">
-                <div className="flex items-center space-x-2">
-                  <div
-                    className={cn(
-                      "w-2 h-2 rounded-full transition-colors",
-                      speaking || isLoading
-                        ? "bg-nova-400 animate-pulse"
-                        : "bg-green-400",
-                    )}
-                  />
-                  <span className="text-white text-xs font-medium">
-                    {isLoading
-                      ? "Thinking..."
-                      : speaking
-                        ? "Speaking"
-                        : "Ready"}
-                  </span>
-                </div>
-              </div>
-
-              {/* Voice Indicator */}
-              {speaking && (
-                <div className="bg-nova-500/30 backdrop-blur-md rounded-2xl px-3 py-2 border border-nova-400/30 animate-pulse">
-                  <div className="flex items-center space-x-2">
-                    <Volume2 className="w-3 h-3 text-nova-300" />
-                    <span className="text-nova-100 text-xs font-medium">
-                      Voice Active
-                    </span>
-                  </div>
-                </div>
+          <div className="absolute inset-0 flex items-center justify-center">
+            <img
+              src={getAvatarUrl()}
+              alt="Humanoid Avatar"
+              className={cn(
+                "w-56 h-56 rounded-3xl object-cover transition-transform duration-300 cursor-pointer",
+                speaking && "scale-105",
+                isLoading && "opacity-70",
               )}
-            </div>
-
-            {/* Avatar Info Plate - Mobile Optimized */}
-            <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2">
-              <div className="bg-black/60 backdrop-blur-xl text-white rounded-2xl px-6 py-3 border border-white/20 shadow-2xl">
-                <div className="text-center">
-                  <p className="font-bold text-lg text-gradient-animated">
-                    AI Humanoid Tutor
-                  </p>
-                  <p className="text-sm opacity-80">
-                    Powered by Azure OpenAI & D-ID
-                  </p>
-                  <div className="flex items-center justify-center space-x-2 mt-2">
-                    <div
-                      className={cn(
-                        "w-2 h-2 rounded-full transition-all duration-300",
-                        speaking || isLoading
-                          ? "bg-nova-400 animate-pulse shadow-lg shadow-nova-400/50"
-                          : "bg-green-400 shadow-lg shadow-green-400/50",
-                      )}
-                    />
-                    <span className="text-xs opacity-70">
-                      {isLoading
-                        ? "Processing..."
-                        : speaking
-                          ? "Speaking"
-                          : "Listening"}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
+              onClick={() => {
+                // On mobile, tapping avatar will replay last reply or toggle listening
+                if (aiTypedText) {
+                  speakText(aiTypedText || reply);
+                } else if (reply) {
+                  speakText(reply);
+                } else {
+                  setListening((s) => !s);
+                }
+              }}
+            />
           </div>
         </div>
 

@@ -11,7 +11,6 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { UserAnalyticsProvider } from "@/contexts/UserAnalyticsContext";
 import { OfflineModeBanner } from "@/components/OfflineModeBanner";
 import { ThemeProvider } from "@/components/ThemeProvider";
-import FirebaseStatus from "@/components/FirebaseStatus";
 import { PublicLayout } from "@/components/PublicLayout";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import { ConditionalHomePage } from "@/components/ConditionalHomePage";
@@ -83,7 +82,7 @@ const PlaceholderPage = ({
 );
 
 const App = () => (
-  <ThemeProvider defaultTheme="system" storageKey="aangilam-ui-theme">
+  <ThemeProvider defaultTheme="light" storageKey="aangilam-ui-theme">
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <Toaster />
@@ -354,7 +353,6 @@ const App = () => (
                   }
                 />
               </Routes>
-              <FirebaseStatus />
             </UserAnalyticsProvider>
           </AuthProvider>
         </BrowserRouter>
