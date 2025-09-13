@@ -1,8 +1,20 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Timer as TimerIcon, RefreshCw, CheckCircle2, XCircle, ArrowLeft } from "lucide-react";
+import {
+  Timer as TimerIcon,
+  RefreshCw,
+  CheckCircle2,
+  XCircle,
+  ArrowLeft,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
 
@@ -35,8 +47,7 @@ const normalize = (s: string) => s.replace(/\s+/g, " ").trim().toLowerCase();
 // Provided passages and corrections
 const PASSAGES: PassageSpec[] = [
   {
-    text:
-      "She go to the market yesterday but forget to buy apples. The shop were very crowd. He don't like waiting, so he leave quickly.",
+    text: "She go to the market yesterday but forget to buy apples. The shop were very crowd. He don't like waiting, so he leave quickly.",
     corrections: [
       { wrong: "go", right: "went" },
       { wrong: "forget", right: "forgot" },
@@ -46,8 +57,7 @@ const PASSAGES: PassageSpec[] = [
     ],
   },
   {
-    text:
-      "The childrens is playing in the park when it start to rain. She runned home fastly. They was all wet.",
+    text: "The childrens is playing in the park when it start to rain. She runned home fastly. They was all wet.",
     corrections: [
       { wrong: "childrens", right: "children" },
       { wrong: "is", right: "are" },
@@ -57,8 +67,7 @@ const PASSAGES: PassageSpec[] = [
     ],
   },
   {
-    text:
-      "I has a big dog who bark loud every night. He eat two bowl of food everyday. My parents doesn't likes the noise.",
+    text: "I has a big dog who bark loud every night. He eat two bowl of food everyday. My parents doesn't likes the noise.",
     corrections: [
       { wrong: "has", right: "have" },
       { wrong: "bark", right: "barks" },
@@ -68,8 +77,7 @@ const PASSAGES: PassageSpec[] = [
     ],
   },
   {
-    text:
-      "Yesterday we seen a movie at the mall. The actor was very good but the scene was too much long. After the movie, we goes to dinner.",
+    text: "Yesterday we seen a movie at the mall. The actor was very good but the scene was too much long. After the movie, we goes to dinner.",
     corrections: [
       { wrong: "seen", right: "saw" },
       { wrong: "too much long", right: "too long" },
@@ -77,8 +85,7 @@ const PASSAGES: PassageSpec[] = [
     ],
   },
   {
-    text:
-      "She are my best friend since five years. We enjoys playing football together. Sometime we goes shopping also.",
+    text: "She are my best friend since five years. We enjoys playing football together. Sometime we goes shopping also.",
     corrections: [
       { wrong: "are", right: "has been" },
       { wrong: "enjoys", right: "enjoy" },
@@ -92,7 +99,10 @@ function tokenize(text: string): Token[] {
   return text.split(" ").map((w, i) => ({ index: i, text: w }));
 }
 
-function findGroups(tokens: Token[], corrections: PassageSpec["corrections"]): GroupMistake[] {
+function findGroups(
+  tokens: Token[],
+  corrections: PassageSpec["corrections"],
+): GroupMistake[] {
   const used: boolean[] = Array(tokens.length).fill(false);
   const groups: GroupMistake[] = [];
 
@@ -119,25 +129,33 @@ function findGroups(tokens: Token[], corrections: PassageSpec["corrections"]): G
     const start = findRun(wrongWords);
     if (start !== -1) {
       for (let j = 0; j < wrongWords.length; j++) used[start + j] = true;
-      groups.push({ id: idx, start, length: wrongWords.length, right: corr.right });
+      groups.push({
+        id: idx,
+        start,
+        length: wrongWords.length,
+        right: corr.right,
+      });
     }
   });
 
-  return groups
-    .sort((a, b) => a.start - b.start)
-    .filter((g) => g.start >= 0);
+  return groups.sort((a, b) => a.start - b.start).filter((g) => g.start >= 0);
 }
 
 export default function GrammarDetective() {
   const navigate = useNavigate();
 
   // Choose a random passage at start
-  const [passageIndex, setPassageIndex] = useState(() => Math.floor(Math.random() * PASSAGES.length));
+  const [passageIndex, setPassageIndex] = useState(() =>
+    Math.floor(Math.random() * PASSAGES.length),
+  );
   const passage = PASSAGES[passageIndex];
 
   // Recompute derived state when passage changes
   const tokens = useMemo(() => tokenize(passage.text), [passage.text]);
-  const groups = useMemo(() => findGroups(tokens, passage.corrections), [tokens, passage.corrections]);
+  const groups = useMemo(
+    () => findGroups(tokens, passage.corrections),
+    [tokens, passage.corrections],
+  );
 
   // Map from token index to group id for quick lookup (so clicking any word in the phrase works)
   const groupIdByToken = useMemo(() => {
@@ -191,7 +209,7 @@ export default function GrammarDetective() {
 
   const correctCount = useMemo(
     () => Object.values(statuses).filter((x) => x === "correct").length,
-    [statuses]
+    [statuses],
   );
 
   const formatTime = (n: number) => {
@@ -278,7 +296,9 @@ export default function GrammarDetective() {
       <header className="w-full sticky top-0 z-20 backdrop-blur-md bg-background/70 border-b border-border">
         <div className="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between">
           <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
-            <span className="bg-gradient-to-r from-nova-400 via-electric-400 to-cyber-400 bg-clip-text text-transparent">Grammar Detective</span>
+            <span className="bg-gradient-to-r from-nova-400 via-electric-400 to-cyber-400 bg-clip-text text-transparent">
+              Grammar Detective
+            </span>
           </h1>
           <div
             className={cn(
@@ -287,7 +307,7 @@ export default function GrammarDetective() {
                 ? "bg-red-500/10 text-red-500 border-red-500/30"
                 : secondsLeft <= 60
                   ? "bg-yellow-500/10 text-yellow-600 border-yellow-500/30"
-                  : "bg-cyan-500/10 text-cyan-600 border-cyan-500/30"
+                  : "bg-cyan-500/10 text-cyan-600 border-cyan-500/30",
             )}
           >
             <TimerIcon className="h-4 w-4" />
@@ -301,10 +321,15 @@ export default function GrammarDetective() {
         <Card className="bg-card/80 backdrop-blur-md shadow-xl border-border">
           <CardContent className="p-6 sm:p-8">
             <div className="mb-4 flex items-center justify-between">
-              <Badge variant="outline" className="bg-electric-500/10 text-electric-600 border-electric-500/30">
+              <Badge
+                variant="outline"
+                className="bg-electric-500/10 text-electric-600 border-electric-500/30"
+              >
                 Find mistakes ({groups.length})
               </Badge>
-              <div className="text-sm text-muted-foreground">Click a wrong word to edit it</div>
+              <div className="text-sm text-muted-foreground">
+                Click a wrong word to edit it
+              </div>
             </div>
 
             <div className="text-lg leading-8 sm:text-xl sm:leading-9">
@@ -315,34 +340,51 @@ export default function GrammarDetective() {
                   const gid = groupIdByToken.get(i);
                   if (gid !== undefined) {
                     const g = groups.find((x) => x.id === gid)!;
-                    const phraseTokens = tokens.slice(g.start, g.start + g.length);
-                    const punct = trailingPunct(phraseTokens[phraseTokens.length - 1].text);
-                    const original = phraseTokens.map((t) => stripTrailingPunct(t.text)).join(" ");
+                    const phraseTokens = tokens.slice(
+                      g.start,
+                      g.start + g.length,
+                    );
+                    const punct = trailingPunct(
+                      phraseTokens[phraseTokens.length - 1].text,
+                    );
+                    const original = phraseTokens
+                      .map((t) => stripTrailingPunct(t.text))
+                      .join(" ");
                     const status = statuses[gid];
                     const isEditing = editingId === gid;
 
                     if (isEditing) {
                       out.push(
-                        <span key={`g-${gid}`} className="inline-flex items-center align-baseline mr-1 mb-2">
+                        <span
+                          key={`g-${gid}`}
+                          className="inline-flex items-center align-baseline mr-1 mb-2"
+                        >
                           <input
                             ref={inputRef}
                             value={edits[gid] ?? ""}
-                            onChange={(e) => setEdits((prev) => ({ ...prev, [gid]: e.target.value }))}
+                            onChange={(e) =>
+                              setEdits((prev) => ({
+                                ...prev,
+                                [gid]: e.target.value,
+                              }))
+                            }
                             onKeyDown={(e) => onKeyDown(e, gid)}
                             onBlur={() => submitEdit(gid)}
                             className="px-2 py-1 rounded-md border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-electric-500 text-base"
                             aria-label={`Edit phrase ${original}`}
                           />
                           {punct && <span className="ml-1">{punct}</span>}
-                        </span>
+                        </span>,
                       );
                     } else {
-                      const base = "inline-block align-baseline px-1.5 py-0.5 rounded-md mr-1 mb-2 transition-colors";
-                      const styles = status === "correct"
-                        ? "bg-green-500/15 text-green-700 border border-green-500/30"
-                        : status === "wrong"
-                          ? "bg-red-500/15 text-red-700 border border-red-500/30"
-                          : "bg-yellow-500/10 text-yellow-700 border border-yellow-500/30 cursor-text hover:bg-yellow-500/20";
+                      const base =
+                        "inline-block align-baseline px-1.5 py-0.5 rounded-md mr-1 mb-2 transition-colors";
+                      const styles =
+                        status === "correct"
+                          ? "bg-green-500/15 text-green-700 border border-green-500/30"
+                          : status === "wrong"
+                            ? "bg-red-500/15 text-red-700 border border-red-500/30"
+                            : "bg-yellow-500/10 text-yellow-700 border border-yellow-500/30 cursor-text hover:bg-yellow-500/20";
 
                       out.push(
                         <span
@@ -360,9 +402,14 @@ export default function GrammarDetective() {
                           aria-label={`Edit mistaken phrase ${original}`}
                         >
                           {original}
-                        </span>
+                        </span>,
                       );
-                      if (punct) out.push(<span key={`p-${gid}`} className="mr-2">{punct}</span>);
+                      if (punct)
+                        out.push(
+                          <span key={`p-${gid}`} className="mr-2">
+                            {punct}
+                          </span>,
+                        );
                       else out.push(<span key={`sp-${gid}`}> </span>);
                     }
 
@@ -373,12 +420,20 @@ export default function GrammarDetective() {
                   // Normal token (not part of a mistake group)
                   const t = tokens[i];
                   out.push(
-                    <span key={i} className="inline-block align-baseline px-1.5 py-0.5 rounded-md mr-1 mb-2 transition-colors">
+                    <span
+                      key={i}
+                      className="inline-block align-baseline px-1.5 py-0.5 rounded-md mr-1 mb-2 transition-colors"
+                    >
                       {stripTrailingPunct(t.text)}
-                    </span>
+                    </span>,
                   );
                   const punct = trailingPunct(t.text);
-                  if (punct) out.push(<span key={`p-${i}`} className="mr-2">{punct}</span>);
+                  if (punct)
+                    out.push(
+                      <span key={`p-${i}`} className="mr-2">
+                        {punct}
+                      </span>,
+                    );
                   else out.push(<span key={`sp-${i}`}> </span>);
                   i++;
                 }
@@ -391,14 +446,22 @@ export default function GrammarDetective() {
         {/* Bottom Controls */}
         <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="text-lg font-semibold">
-            Score: <span className={cn(score >= 0 ? "text-green-600" : "text-red-600")}>{score}</span>
+            Score:{" "}
+            <span
+              className={cn(score >= 0 ? "text-green-600" : "text-red-600")}
+            >
+              {score}
+            </span>
           </div>
 
           <div className="flex items-center gap-3">
             <Button variant="outline" onClick={onReset} className="gap-2">
               <RefreshCw className="h-4 w-4" /> Reset
             </Button>
-            <Button onClick={onSubmitGame} className="gap-2 bg-gradient-to-r from-nova-500 to-electric-500 text-white">
+            <Button
+              onClick={onSubmitGame}
+              className="gap-2 bg-gradient-to-r from-nova-500 to-electric-500 text-white"
+            >
               Submit
             </Button>
           </div>
@@ -412,28 +475,51 @@ export default function GrammarDetective() {
             <CardContent className="p-6 sm:p-8 space-y-4">
               <div className="flex items-center justify-between">
                 <h2 className="text-2xl font-bold">Game Over</h2>
-                <Badge variant="outline" className="bg-gradient-to-r from-nova-500/15 to-electric-500/15">{formatTime(secondsLeft)}</Badge>
+                <Badge
+                  variant="outline"
+                  className="bg-gradient-to-r from-nova-500/15 to-electric-500/15"
+                >
+                  {formatTime(secondsLeft)}
+                </Badge>
               </div>
 
               <div className="flex items-center gap-3">
                 <CheckCircle2 className="h-6 w-6 text-green-500" />
-                <span className="text-foreground font-medium">Correct fixes: {correctCount} / {groups.length}</span>
+                <span className="text-foreground font-medium">
+                  Correct fixes: {correctCount} / {groups.length}
+                </span>
               </div>
 
               <div className="flex items-center gap-3">
                 <XCircle className="h-6 w-6 text-red-500" />
-                <span className="text-foreground font-medium">Remaining: {groups.length - correctCount}</span>
+                <span className="text-foreground font-medium">
+                  Remaining: {groups.length - correctCount}
+                </span>
               </div>
 
               <div className="pt-2 text-lg font-semibold">
-                Final Score: <span className={cn(score >= 0 ? "text-green-600" : "text-red-600")}>{score}</span>
+                Final Score:{" "}
+                <span
+                  className={cn(score >= 0 ? "text-green-600" : "text-red-600")}
+                >
+                  {score}
+                </span>
               </div>
 
               <div className="pt-4 flex justify-between gap-3">
-                <Button variant="outline" onClick={() => navigate("/game-arena")} className="gap-2">
+                <Button
+                  variant="outline"
+                  onClick={() => navigate("/game-arena")}
+                  className="gap-2"
+                >
                   <ArrowLeft className="h-4 w-4" /> Back to Game Arena
                 </Button>
-                <Button onClick={onRetryDifferent} className="bg-gradient-to-r from-nova-500 to-electric-500 text-white">Retry</Button>
+                <Button
+                  onClick={onRetryDifferent}
+                  className="bg-gradient-to-r from-nova-500 to-electric-500 text-white"
+                >
+                  Retry
+                </Button>
               </div>
             </CardContent>
           </Card>
