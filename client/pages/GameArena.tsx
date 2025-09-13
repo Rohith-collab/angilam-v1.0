@@ -35,6 +35,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import WordBuildingBattles from "@/components/WordBuildingBattles";
+import { useNavigate } from "react-router-dom";
 
 interface GameMode {
   id: string;
