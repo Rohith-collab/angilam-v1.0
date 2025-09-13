@@ -42,6 +42,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import NotFound from "./pages/NotFound";
 import GameArena from "./pages/GameArena";
+import GrammarDetective from "./pages/GrammarDetective";
 
 const queryClient = new QueryClient();
 
@@ -338,6 +339,14 @@ const App = () => (
                       <Layout>
                         <GameArena />
                       </Layout>
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/grammar-detective"
+                  element={
+                    <ProtectedRoute>
+                      <GrammarDetective />
                     </ProtectedRoute>
                   }
                 />
