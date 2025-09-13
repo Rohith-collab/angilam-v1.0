@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -61,6 +62,7 @@ interface LeaderboardEntry {
 
 const GameArena = () => {
   const { currentUser } = useAuth();
+  const navigate = useNavigate();
   const [selectedMode, setSelectedMode] = useState<string>("");
   const [showWordBattles, setShowWordBattles] = useState(false);
   const [userLevel, setUserLevel] = useState(15);
@@ -99,7 +101,7 @@ const GameArena = () => {
       id: "survival-mode",
       title: "Survival Mode",
       description: "One life. Rising difficulty. Miss once and it's game over.",
-      difficulty: "Hard",
+      difficulty: "Easy",
       players: 1,
       duration: "5 min",
       reward: 200,
@@ -737,7 +739,20 @@ const GameArena = () => {
                       ? "border-border hover:border-muted opacity-75"
                       : "border-border hover:border-electric-500/70 dark:hover:border-electric-500/50 glow-electric"
                   }`}
-                  onClick={() => !mode.isLocked && setSelectedMode(mode.id)}
+                  onClick={() => {
+                    if (mode.isLocked) return;
+                    if (mode.id === "grammar-detective") {
+                      navigate("/grammar-detective");
+                    } else if (mode.id === "survival-mode") {
+                      navigate("/survival-mode");
+                    } else if (mode.id === "jumbled-words") {
+                      navigate("/jumbled-words");
+                    } else if (mode.id === "word-building-battles") {
+                      navigate("/word-battles");
+                    } else {
+                      setSelectedMode(mode.id);
+                    }
+                  }}
                   style={{ animationDelay: `${index * 100}ms` }}
                 >
                   <div className="absolute inset-0 bg-gradient-to-br from-transparent via-foreground/5 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
@@ -811,7 +826,13 @@ const GameArena = () => {
                         e.stopPropagation();
                         if (!mode.isLocked) {
                           if (mode.id === "word-building-battles") {
-                            setShowWordBattles(true);
+                            navigate("/word-battles");
+                          } else if (mode.id === "grammar-detective") {
+                            navigate("/grammar-detective");
+                          } else if (mode.id === "survival-mode") {
+                            navigate("/survival-mode");
+                          } else if (mode.id === "jumbled-words") {
+                            navigate("/jumbled-words");
                           } else {
                             setSelectedMode(mode.id);
                           }
