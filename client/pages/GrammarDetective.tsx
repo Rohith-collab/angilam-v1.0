@@ -19,7 +19,7 @@ interface ErrorSpan {
 
 function normalizeToken(t: string) {
   const unified = t.replace(/’/g, "'");
-  return unified.replace(/[.,!?;:()\[\]{}"“”���’]/g, "").toLowerCase();
+  return unified.replace(/[.,!?;:()\[\]{}"“”‘’]/g, "").toLowerCase();
 }
 
 function splitTokens(text: string) {
@@ -230,9 +230,9 @@ const GrammarDetective: React.FC = () => {
   const allFixed = useMemo(() => errors.length > 0 && errors.every((e) => e.status === "correct"), [errors]);
 
   return (
-    <div className="min-h-screen w-full relative overflow-hidden cyberpunk-fullscreen">
+    <div className="min-h-screen w-full relative overflow-hidden bg-background">
       {/* Background layers */}
-      <div className="absolute inset-0 bg-gradient-to-br from-nova-500/20 via-transparent to-electric-500/20" />
+      <div className="absolute inset-0 bg-gradient-to-br from-electric-500/15 via-transparent to-nova-500/15" />
 
       {/* Header */}
       <header className="relative z-10 w-full px-4 sm:px-8 py-4 flex items-center justify-between">
