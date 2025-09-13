@@ -44,6 +44,7 @@ import NotFound from "./pages/NotFound";
 import GameArena from "./pages/GameArena";
 import GrammarDetective from "./pages/GrammarDetective";
 import SurvivalMode from "./pages/SurvivalMode";
+import JumbledWords from "./pages/JumbledWords";
 
 const queryClient = new QueryClient();
 
@@ -356,6 +357,14 @@ const App = () => (
                   element={
                     <ProtectedRoute>
                       <SurvivalMode />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/jumbled-words"
+                  element={
+                    <ProtectedRoute>
+                      <JumbledWords />
                     </ProtectedRoute>
                   }
                 />
