@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 
@@ -34,8 +40,7 @@ function uid() {
 
 const PASSAGES: PassageSpec[] = [
   {
-    text:
-      "She go to the market yesterday but forget to buy apples. The shop were very crowd. He don’t like waiting, so he leave quickly.",
+    text: "She go to the market yesterday but forget to buy apples. The shop were very crowd. He don’t like waiting, so he leave quickly.",
     mistakes: [
       { wrong: "go", correct: "went" },
       { wrong: "forget", correct: "forgot" },
@@ -45,8 +50,7 @@ const PASSAGES: PassageSpec[] = [
     ],
   },
   {
-    text:
-      "The childrens is playing in the park when it start to rain. She runned home fastly. They was all wet.",
+    text: "The childrens is playing in the park when it start to rain. She runned home fastly. They was all wet.",
     mistakes: [
       { wrong: "childrens", correct: "children" },
       { wrong: "is", correct: "are" },
@@ -56,8 +60,7 @@ const PASSAGES: PassageSpec[] = [
     ],
   },
   {
-    text:
-      "I has a big dog who bark loud every night. He eat two bowl of food everyday. My parents doesn’t likes the noise.",
+    text: "I has a big dog who bark loud every night. He eat two bowl of food everyday. My parents doesn’t likes the noise.",
     mistakes: [
       { wrong: "has", correct: "have" },
       { wrong: "bark", correct: "barks" },
@@ -67,8 +70,7 @@ const PASSAGES: PassageSpec[] = [
     ],
   },
   {
-    text:
-      "Yesterday we seen a movie at the mall. The actor was very good but the scene was too much long. After the movie, we goes to dinner.",
+    text: "Yesterday we seen a movie at the mall. The actor was very good but the scene was too much long. After the movie, we goes to dinner.",
     mistakes: [
       { wrong: "seen", correct: "saw" },
       { wrong: "too much long", correct: "too long" },
@@ -76,8 +78,7 @@ const PASSAGES: PassageSpec[] = [
     ],
   },
   {
-    text:
-      "She are my best friend since five years. We enjoys playing football together. Sometime we goes shopping also.",
+    text: "She are my best friend since five years. We enjoys playing football together. Sometime we goes shopping also.",
     mistakes: [
       { wrong: "are", correct: "has been" },
       { wrong: "enjoys", correct: "enjoy" },
@@ -227,7 +228,10 @@ const GrammarDetective: React.FC = () => {
     setPassageIndex(newIdx);
   };
 
-  const allFixed = useMemo(() => errors.length > 0 && errors.every((e) => e.status === "correct"), [errors]);
+  const allFixed = useMemo(
+    () => errors.length > 0 && errors.every((e) => e.status === "correct"),
+    [errors],
+  );
 
   return (
     <div className="min-h-screen w-full relative overflow-hidden bg-background">
@@ -240,7 +244,9 @@ const GrammarDetective: React.FC = () => {
           Grammar Detective
         </h1>
         <div className="flex items-center gap-3">
-          <div className={`px-3 py-1 rounded-lg font-mono text-sm border ${timeLeft <= 10 ? "border-red-500/60 text-red-400" : "border-electric-500/50 text-electric-400"}`}>
+          <div
+            className={`px-3 py-1 rounded-lg font-mono text-sm border ${timeLeft <= 10 ? "border-red-500/60 text-red-400" : "border-electric-500/50 text-electric-400"}`}
+          >
             {secondsToClock(timeLeft)}
           </div>
           <Button
@@ -265,7 +271,7 @@ const GrammarDetective: React.FC = () => {
                 const isCorrect = err.status === "correct";
                 const display = isCorrect
                   ? err.correct
-                  : err.lastAttempt ?? err.wrongPhrase;
+                  : (err.lastAttempt ?? err.wrongPhrase);
                 const color = isCorrect
                   ? "text-green-500 bg-green-500/10 border-green-500/30"
                   : err.lastAttempt
@@ -295,15 +301,20 @@ const GrammarDetective: React.FC = () => {
                 );
 
                 const element = (
-                  <span key={`err-${err.id}`} className="inline-block align-baseline mx-1">
+                  <span
+                    key={`err-${err.id}`}
+                    className="inline-block align-baseline mx-1"
+                  >
                     {content}
                   </span>
                 );
 
                 // Render the element and skip the rest of the tokens in this span
-                const placeholders = new Array(err.length - 1).fill(null).map((_, k) => (
-                  <span key={`skip-${err.id}-${k}`} className="hidden" />
-                ));
+                const placeholders = new Array(err.length - 1)
+                  .fill(null)
+                  .map((_, k) => (
+                    <span key={`skip-${err.id}-${k}`} className="hidden" />
+                  ));
 
                 return (
                   <React.Fragment key={`grp-${err.id}`}>
@@ -314,7 +325,9 @@ const GrammarDetective: React.FC = () => {
               }
 
               // If token is covered by an error span but not the start, skip rendering
-              const covered = errors.some((e) => i > e.start && i < e.start + e.length);
+              const covered = errors.some(
+                (e) => i > e.start && i < e.start + e.length,
+              );
               if (covered) return null;
 
               const clickable = false; // non-error tokens are not editable
@@ -361,16 +374,26 @@ const GrammarDetective: React.FC = () => {
         <div className="absolute inset-0 z-30 flex items-center justify-center bg-background/90 backdrop-blur-xl">
           <div className="w-full max-w-md mx-auto bg-card rounded-2xl border border-border p-6 text-center shadow-2xl">
             <h2 className="text-2xl font-extrabold mb-2">Game Over</h2>
-            <p className="text-muted-foreground mb-6">Final Score: <span className="font-bold text-cyan-500">{score}</span></p>
+            <p className="text-muted-foreground mb-6">
+              Final Score:{" "}
+              <span className="font-bold text-cyan-500">{score}</span>
+            </p>
             <div className="flex items-center justify-center gap-3">
-              <Button onClick={handleRetry} className="bg-gradient-to-r from-electric-500 to-cyber-500 text-white">
+              <Button
+                onClick={handleRetry}
+                className="bg-gradient-to-r from-electric-500 to-cyber-500 text-white"
+              >
                 Retry
               </Button>
               <Button variant="outline" onClick={() => navigate("/game-arena")}>
                 Back to Game Arena
               </Button>
             </div>
-            {allFixed && <p className="mt-4 text-green-500 font-medium">Great job! You found all corrections.</p>}
+            {allFixed && (
+              <p className="mt-4 text-green-500 font-medium">
+                Great job! You found all corrections.
+              </p>
+            )}
           </div>
         </div>
       )}

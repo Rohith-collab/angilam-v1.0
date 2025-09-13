@@ -120,7 +120,9 @@ const JumbledWords: React.FC = () => {
         <h1 className="text-xl sm:text-2xl font-extrabold tracking-wide bg-gradient-to-r from-electric-500 to-cyber-500 bg-clip-text text-transparent">
           Jumbled Words
         </h1>
-        <div className={`px-3 py-1 rounded-lg font-mono text-sm border ${timeLeft <= 10 ? "border-red-500/60 text-red-400" : "border-electric-500/50 text-electric-400"}`}>
+        <div
+          className={`px-3 py-1 rounded-lg font-mono text-sm border ${timeLeft <= 10 ? "border-red-500/60 text-red-400" : "border-electric-500/50 text-electric-400"}`}
+        >
           {secondsToClock(timeLeft)}
         </div>
       </header>
@@ -151,7 +153,10 @@ const JumbledWords: React.FC = () => {
               placeholder="Type the correct word"
               className="w-full max-w-sm px-4 py-3 rounded-xl bg-background border border-electric-500/40 outline-none text-foreground"
             />
-            <Button onClick={submit} className="bg-gradient-to-r from-electric-500 to-cyber-500 text-white">
+            <Button
+              onClick={submit}
+              className="bg-gradient-to-r from-electric-500 to-cyber-500 text-white"
+            >
               Submit
             </Button>
           </div>
@@ -160,7 +165,9 @@ const JumbledWords: React.FC = () => {
 
       {/* Bottom score */}
       <footer className="fixed bottom-0 left-0 right-0 z-20 px-4 sm:px-8 py-3 bg-background/80 backdrop-blur-lg border-t border-border flex items-center justify-center">
-        <div className="text-sm sm:text-base">Score: <span className="font-bold text-cyan-400">{score}</span></div>
+        <div className="text-sm sm:text-base">
+          Score: <span className="font-bold text-cyan-400">{score}</span>
+        </div>
       </footer>
 
       {/* Game Over overlay */}
@@ -168,10 +175,24 @@ const JumbledWords: React.FC = () => {
         <div className="absolute inset-0 z-30 flex items-center justify-center bg-background/90 backdrop-blur-xl">
           <div className="w-full max-w-md mx-auto bg-card rounded-2xl border border-border p-6 text-center shadow-2xl">
             <h2 className="text-2xl font-extrabold mb-2">Game Over</h2>
-            <p className="text-muted-foreground mb-6">Final Score: <span className="font-bold text-cyan-500">{score}</span></p>
+            <p className="text-muted-foreground mb-6">
+              Final Score:{" "}
+              <span className="font-bold text-cyan-500">{score}</span>
+            </p>
             <div className="flex items-center justify-center gap-3">
-              <Button onClick={handleRetry} className="bg-gradient-to-r from-nova-500 to-electric-500 text-white">Retry</Button>
-              <Button variant="outline" onClick={() => navigate("/game-arena")} className="border-electric-500/60">Back to Game Arena</Button>
+              <Button
+                onClick={handleRetry}
+                className="bg-gradient-to-r from-nova-500 to-electric-500 text-white"
+              >
+                Retry
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => navigate("/game-arena")}
+                className="border-electric-500/60"
+              >
+                Back to Game Arena
+              </Button>
             </div>
           </div>
         </div>

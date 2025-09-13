@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 
@@ -41,19 +47,27 @@ const LETTER_SETS_RAW = [
   "w a t e r n s",
 ];
 
-const LETTER_SETS: string[][] = LETTER_SETS_RAW.map((s) => s.replace(/\s+/g, "").split(""));
+const LETTER_SETS: string[][] = LETTER_SETS_RAW.map((s) =>
+  s.replace(/\s+/g, "").split(""),
+);
 
 const TOTAL_TIME = 120; // 2 minutes
 
 function normalizeInput(raw: string) {
-  return raw.toLowerCase().trim().replace(/[^a-z]/g, "");
+  return raw
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z]/g, "");
 }
 
 function countLetters(letters: string[]): Record<string, number> {
-  return letters.reduce((acc, c) => {
-    acc[c] = (acc[c] || 0) + 1;
-    return acc;
-  }, {} as Record<string, number>);
+  return letters.reduce(
+    (acc, c) => {
+      acc[c] = (acc[c] || 0) + 1;
+      return acc;
+    },
+    {} as Record<string, number>,
+  );
 }
 
 function lettersFit(word: string, rack: string[]): boolean {
@@ -72,7 +86,11 @@ function pointsForLength(len: number): number {
   return 5; // 3 letters
 }
 
-type Feedback = { type: "ok" | "error"; message: string; points?: number } | null;
+type Feedback = {
+  type: "ok" | "error";
+  message: string;
+  points?: number;
+} | null;
 
 const WordBattles: React.FC = () => {
   const navigate = useNavigate();
@@ -84,11 +102,16 @@ const WordBattles: React.FC = () => {
   const [timeLeft, setTimeLeft] = useState(TOTAL_TIME);
   const [over, setOver] = useState(false);
   const [showDebug, setShowDebug] = useState(false);
-  const [attemptLog, setAttemptLog] = useState<{ word: string; result: string }[]>([]);
+  const [attemptLog, setAttemptLog] = useState<
+    { word: string; result: string }[]
+  >([]);
   const [extendedDict, setExtendedDict] = useState<Set<string> | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
 
-  const easyDict = useMemo(() => new Set(EASY_WORD_BANK.map((w) => w.toLowerCase())), []);
+  const easyDict = useMemo(
+    () => new Set(EASY_WORD_BANK.map((w) => w.toLowerCase())),
+    [],
+  );
 
   // Attempt to load extended dictionary if available
   useEffect(() => {
@@ -194,7 +217,10 @@ const WordBattles: React.FC = () => {
 
     // 3) letter usage
     if (!lettersFit(w, rack)) {
-      showFeedback({ type: "error", message: "✖ Invalid — uses letters not in set" });
+      showFeedback({
+        type: "error",
+        message: "✖ Invalid — uses letters not in set",
+      });
       logAttempt(w, "letters not in set");
       return;
     }
@@ -224,7 +250,9 @@ const WordBattles: React.FC = () => {
         <h1 className="text-xl sm:text-2xl font-extrabold tracking-wide bg-gradient-to-r from-electric-500 to-cyber-500 bg-clip-text text-transparent">
           Word Building Battles
         </h1>
-        <div className={`px-3 py-1 rounded-lg font-mono text-sm border ${timeLeft <= 10 ? "border-red-500/60 text-red-400" : "border-electric-500/50 text-electric-400"}`}>
+        <div
+          className={`px-3 py-1 rounded-lg font-mono text-sm border ${timeLeft <= 10 ? "border-red-500/60 text-red-400" : "border-electric-500/50 text-electric-400"}`}
+        >
           {secondsToClock(timeLeft)}
         </div>
       </header>
@@ -250,16 +278,23 @@ const WordBattles: React.FC = () => {
             ref={inputRef}
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            onKeyDown={(e) => { if (e.key === "Enter") submit(); }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") submit();
+            }}
             placeholder="Type a word"
             className="w-full px-4 py-3 rounded-xl bg-background border border-electric-500/40 outline-none text-foreground text-lg"
           />
-          <Button onClick={submit} className="bg-gradient-to-r from-electric-500 to-cyber-500 text-white">
+          <Button
+            onClick={submit}
+            className="bg-gradient-to-r from-electric-500 to-cyber-500 text-white"
+          >
             Submit
           </Button>
         </div>
         {feedback && (
-          <div className={`${feedback.type === "ok" ? "text-green-500" : "text-red-400"} text-sm font-medium mb-4`}>
+          <div
+            className={`${feedback.type === "ok" ? "text-green-500" : "text-red-400"} text-sm font-medium mb-4`}
+          >
             {feedback.message}
           </div>
         )}
@@ -269,8 +304,14 @@ const WordBattles: React.FC = () => {
           <h3 className="font-semibold mb-2">Words Found ({found.length})</h3>
           <div className="max-h-48 overflow-y-auto grid grid-cols-2 md:grid-cols-3 gap-2">
             {found.map((w) => (
-              <div key={w} className="p-2 rounded-lg bg-muted/50 border border-border text-center font-mono">
-                {w.toUpperCase()} <span className="text-muted-foreground text-xs">(+{pointsForLength(w.length)})</span>
+              <div
+                key={w}
+                className="p-2 rounded-lg bg-muted/50 border border-border text-center font-mono"
+              >
+                {w.toUpperCase()}{" "}
+                <span className="text-muted-foreground text-xs">
+                  (+{pointsForLength(w.length)})
+                </span>
               </div>
             ))}
           </div>
@@ -301,11 +342,27 @@ const WordBattles: React.FC = () => {
 
       {/* Bottom score */}
       <footer className="fixed bottom-0 left-0 right-0 z-20 px-4 sm:px-8 py-3 bg-background/85 backdrop-blur-lg border-t border-border flex items-center justify-between">
-        <div className="text-sm sm:text-base">Score: <span className="font-bold text-cyan-400">{score}</span></div>
-        <div className="text-xs text-muted-foreground">3L=5 · 4L=10 · 5L=20 · 6L+=30</div>
+        <div className="text-sm sm:text-base">
+          Score: <span className="font-bold text-cyan-400">{score}</span>
+        </div>
+        <div className="text-xs text-muted-foreground">
+          3L=5 · 4L=10 · 5L=20 · 6L+=30
+        </div>
         <div className="flex items-center gap-2">
-          <Button variant="outline" onClick={reset} className="border-electric-500/60">Retry</Button>
-          <Button variant="outline" onClick={() => navigate("/game-arena")} className="border-electric-500/60">Back</Button>
+          <Button
+            variant="outline"
+            onClick={reset}
+            className="border-electric-500/60"
+          >
+            Retry
+          </Button>
+          <Button
+            variant="outline"
+            onClick={() => navigate("/game-arena")}
+            className="border-electric-500/60"
+          >
+            Back
+          </Button>
         </div>
       </footer>
 
@@ -314,11 +371,28 @@ const WordBattles: React.FC = () => {
         <div className="absolute inset-0 z-30 flex items-center justify-center bg-background/90 backdrop-blur-xl">
           <div className="w-full max-w-md mx-auto bg-card rounded-2xl border border-border p-6 text-center shadow-2xl">
             <h2 className="text-2xl font-extrabold mb-2">Game Over</h2>
-            <p className="text-muted-foreground">Words Found: <span className="font-bold text-foreground">{found.length}</span></p>
-            <p className="text-muted-foreground mb-6">Final Score: <span className="font-bold text-cyan-500">{score}</span></p>
+            <p className="text-muted-foreground">
+              Words Found:{" "}
+              <span className="font-bold text-foreground">{found.length}</span>
+            </p>
+            <p className="text-muted-foreground mb-6">
+              Final Score:{" "}
+              <span className="font-bold text-cyan-500">{score}</span>
+            </p>
             <div className="flex items-center justify-center gap-3">
-              <Button onClick={reset} className="bg-gradient-to-r from-nova-500 to-electric-500 text-white">Retry</Button>
-              <Button variant="outline" onClick={() => navigate("/game-arena")} className="border-electric-500/60">Back to Game Arena</Button>
+              <Button
+                onClick={reset}
+                className="bg-gradient-to-r from-nova-500 to-electric-500 text-white"
+              >
+                Retry
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => navigate("/game-arena")}
+                className="border-electric-500/60"
+              >
+                Back to Game Arena
+              </Button>
             </div>
           </div>
         </div>
