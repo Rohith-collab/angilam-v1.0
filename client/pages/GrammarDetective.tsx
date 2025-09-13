@@ -19,7 +19,7 @@ interface ErrorSpan {
 
 function normalizeToken(t: string) {
   const unified = t.replace(/’/g, "'");
-  return unified.replace(/[.,!?;:()\[\]{}"“”‘’]/g, "").toLowerCase();
+  return unified.replace(/[.,!?;:()\[\]{}"“”���’]/g, "").toLowerCase();
 }
 
 function splitTokens(text: string) {
@@ -193,7 +193,7 @@ const GrammarDetective: React.FC = () => {
     const e = errors.find((x) => x.id === errId);
     if (!e || e.status === "correct") return;
     setEditingId(errId);
-    setInputValue(e.lastAttempt ?? e.correct ? e.wrongPhrase : e.wrongPhrase);
+    setInputValue(e.lastAttempt ?? e.wrongPhrase);
   };
 
   const submitEdit = () => {
