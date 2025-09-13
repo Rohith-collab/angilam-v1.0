@@ -325,7 +325,6 @@ export default function GrammarDetective() {
               </div>
 
               <div className="pt-4 flex justify-end gap-3">
-                <Button variant="outline" onClick={() => setEnded(false)}>Close</Button>
                 <Button onClick={onReset} className="bg-gradient-to-r from-nova-500 to-electric-500 text-white">Play Again</Button>
               </div>
             </CardContent>
