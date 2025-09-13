@@ -2,8 +2,8 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 
-// Simple beginner word bank (validation)
-const WORD_BANK = [
+// Easy word bank (source of truth if no extended dictionary is available)
+const EASY_WORD_BANK = [
   "cat",
   "dog",
   "pen",
@@ -24,37 +24,43 @@ const WORD_BANK = [
   "bat",
   "rat",
   "mat",
+  "apple",
+  "water",
+  "learn",
+  "trace",
+  "right",
+  "house",
 ];
 
+// Predefined letter sets to keep variety without repetition
+const LETTER_SETS_RAW = [
+  "c a t d o p n",
+  "r a m e h l s",
+  "s t a r o p m",
+  "b o o k g a m",
+  "w a t e r n s",
+];
+
+const LETTER_SETS: string[][] = LETTER_SETS_RAW.map((s) => s.replace(/\s+/g, "").split(""));
+
 const TOTAL_TIME = 120; // 2 minutes
-const RACK_SIZE = 7;
-const VOWELS = new Set(["a", "e", "i", "o", "u"]);
 
-function randInt(n: number) {
-  return Math.floor(Math.random() * n);
+function normalizeInput(raw: string) {
+  return raw.toLowerCase().trim().replace(/[^a-z]/g, "");
 }
 
-function buildRack(size: number): string[] {
-  // Light-weighted pool for playability
-  const pool = "aaaaaeeeiiiooouu" + "bbccddfghhjkllmmnnppqrrsssttttvvwwxxyz";
-  const rack: string[] = [];
-  for (let i = 0; i < size; i++) rack.push(pool[randInt(pool.length)]);
-  const vowelCount = rack.filter((c) => VOWELS.has(c)).length;
-  if (vowelCount < 2) {
-    for (let i = vowelCount; i < 2; i++) {
-      const idx = randInt(rack.length);
-      rack[idx] = ["a", "e", "i", "o", "u"][randInt(5)];
-    }
-  }
-  return rack;
+function countLetters(letters: string[]): Record<string, number> {
+  return letters.reduce((acc, c) => {
+    acc[c] = (acc[c] || 0) + 1;
+    return acc;
+  }, {} as Record<string, number>);
 }
 
-function canFormWord(word: string, rack: string[]): boolean {
-  const counts: Record<string, number> = {};
-  for (const c of rack) counts[c] = (counts[c] || 0) + 1;
-  for (const ch of word) {
-    if (!counts[ch]) return false;
-    counts[ch] -= 1;
+function lettersFit(word: string, rack: string[]): boolean {
+  const rackCounts = countLetters(rack);
+  const wCounts = countLetters(word.split(""));
+  for (const [ch, n] of Object.entries(wCounts)) {
+    if ((rackCounts[ch] || 0) < n) return false;
   }
   return true;
 }
@@ -66,27 +72,57 @@ function pointsForLength(len: number): number {
   return 5; // 3 letters
 }
 
+type Feedback = { type: "ok" | "error"; message: string; points?: number } | null;
+
 const WordBattles: React.FC = () => {
   const navigate = useNavigate();
   const [rack, setRack] = useState<string[]>([]);
   const [input, setInput] = useState("");
   const [score, setScore] = useState(0);
   const [found, setFound] = useState<string[]>([]);
-  const [msg, setMsg] = useState<string>("");
+  const [feedback, setFeedback] = useState<Feedback>(null);
   const [timeLeft, setTimeLeft] = useState(TOTAL_TIME);
   const [over, setOver] = useState(false);
+  const [showDebug, setShowDebug] = useState(false);
+  const [attemptLog, setAttemptLog] = useState<{ word: string; result: string }[]>([]);
+  const [extendedDict, setExtendedDict] = useState<Set<string> | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
-  const dict = useMemo(() => new Set(WORD_BANK.map((w) => w.toLowerCase())), []);
+
+  const easyDict = useMemo(() => new Set(EASY_WORD_BANK.map((w) => w.toLowerCase())), []);
+
+  // Attempt to load extended dictionary if available
+  useEffect(() => {
+    const loadDict = async () => {
+      try {
+        const res = await fetch("/words-dictionary.json");
+        if (res.ok) {
+          const words: string[] = await res.json();
+          setExtendedDict(new Set(words.map((w) => w.toLowerCase())));
+        } else {
+          setExtendedDict(null);
+        }
+      } catch {
+        setExtendedDict(null);
+      }
+    };
+    loadDict();
+  }, []);
+
+  const pickLetters = useCallback(() => {
+    const idx = Math.floor(Math.random() * LETTER_SETS.length);
+    setRack(LETTER_SETS[idx]);
+  }, []);
 
   const reset = useCallback(() => {
-    setRack(buildRack(RACK_SIZE));
+    pickLetters();
     setInput("");
     setScore(0);
     setFound([]);
-    setMsg("");
+    setFeedback(null);
+    setAttemptLog([]);
     setTimeLeft(TOTAL_TIME);
     setOver(false);
-  }, []);
+  }, [pickLetters]);
 
   useEffect(() => {
     reset();
@@ -122,29 +158,65 @@ const WordBattles: React.FC = () => {
     return `${m}:${sec}`;
   };
 
-  const flash = (text: string) => {
-    setMsg(text);
-    setTimeout(() => setMsg(""), 900);
+  const logAttempt = (word: string, result: string) => {
+    setAttemptLog((prev) => [{ word, result }, ...prev].slice(0, 10));
+  };
+
+  const showFeedback = (fb: Feedback) => {
+    setFeedback(fb);
+    setTimeout(() => setFeedback(null), 1500);
+  };
+
+  const inDictionary = (word: string) => {
+    if (easyDict.has(word)) return true;
+    if (extendedDict && extendedDict.has(word)) return true;
+    return false;
   };
 
   const submit = () => {
     if (over) return;
-    const guess = input.trim().toLowerCase();
-    if (!guess) return;
-    if (guess.length < 3) return flash("Invalid!");
-    if (found.includes(guess)) return flash("Invalid!");
-    if (!dict.has(guess)) return flash("Invalid!");
-    if (!canFormWord(guess, rack)) return flash("Invalid!");
+    const w = normalizeInput(input);
+    if (!w) return;
 
-    const pts = pointsForLength(guess.length);
+    // 1) length
+    if (w.length < 3) {
+      showFeedback({ type: "error", message: "✖ Too short (min 3)" });
+      logAttempt(w, "too short");
+      return;
+    }
+
+    // 2) duplicate (case-insensitive)
+    if (found.some((fw) => fw.toLowerCase() === w)) {
+      showFeedback({ type: "error", message: "✖ Already used" });
+      logAttempt(w, "already used");
+      return;
+    }
+
+    // 3) letter usage
+    if (!lettersFit(w, rack)) {
+      showFeedback({ type: "error", message: "✖ Invalid — uses letters not in set" });
+      logAttempt(w, "letters not in set");
+      return;
+    }
+
+    // 4) dictionary
+    if (!inDictionary(w)) {
+      showFeedback({ type: "error", message: "✖ Invalid — not a real word" });
+      logAttempt(w, "not a real word");
+      return;
+    }
+
+    // success
+    const pts = pointsForLength(w.length);
     setScore((s) => s + pts);
-    setFound((f) => [guess, ...f]);
+    setFound((f) => [w, ...f]);
     setInput("");
+    showFeedback({ type: "ok", message: `✓ Accepted +${pts}`, points: pts });
+    logAttempt(w, `accepted +${pts}`);
   };
 
   return (
     <div className="min-h-screen w-full relative overflow-hidden bg-background">
-      {/* fun minimal gradient */}
       <div className="absolute inset-0 bg-gradient-to-br from-nova-500/15 via-transparent to-electric-500/20" />
 
       {/* Header */}
@@ -159,7 +231,7 @@ const WordBattles: React.FC = () => {
 
       {/* Content */}
       <main className="relative z-10 flex flex-col items-center justify-start px-4 sm:px-8 pt-4 pb-28">
-        {/* Rack */}
+        {/* Letter rack */}
         <div className="flex flex-wrap items-center justify-center gap-3 mb-6">
           {rack.map((ch, i) => (
             <div
@@ -172,15 +244,13 @@ const WordBattles: React.FC = () => {
           ))}
         </div>
 
-        {/* Input */}
+        {/* Input + submit */}
         <div className="w-full max-w-xl flex items-center gap-3 justify-center mb-2">
           <input
             ref={inputRef}
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") submit();
-            }}
+            onKeyDown={(e) => { if (e.key === "Enter") submit(); }}
             placeholder="Type a word"
             className="w-full px-4 py-3 rounded-xl bg-background border border-electric-500/40 outline-none text-foreground text-lg"
           />
@@ -188,7 +258,11 @@ const WordBattles: React.FC = () => {
             Submit
           </Button>
         </div>
-        {msg && <div className="text-sm text-red-400 mb-4">{msg}</div>}
+        {feedback && (
+          <div className={`${feedback.type === "ok" ? "text-green-500" : "text-red-400"} text-sm font-medium mb-4`}>
+            {feedback.message}
+          </div>
+        )}
 
         {/* Found words list */}
         <div className="w-full max-w-3xl">
@@ -200,6 +274,28 @@ const WordBattles: React.FC = () => {
               </div>
             ))}
           </div>
+        </div>
+
+        {/* Debug toggle */}
+        <div className="w-full max-w-3xl mt-6">
+          <button
+            onClick={() => setShowDebug((v) => !v)}
+            className="text-xs text-muted-foreground underline"
+          >
+            {showDebug ? "Hide" : "Show"} debug log
+          </button>
+          {showDebug && (
+            <div className="mt-2 p-3 rounded-lg border border-border bg-muted/40 text-xs">
+              <div className="font-semibold mb-1">Last attempts</div>
+              <ul className="list-disc pl-5 space-y-1">
+                {attemptLog.map((a, i) => (
+                  <li key={i}>
+                    <span className="font-mono">{a.word}</span>: {a.result}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
       </main>
 
