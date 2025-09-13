@@ -823,6 +823,8 @@ const GameArena = () => {
                         if (!mode.isLocked) {
                           if (mode.id === "word-building-battles") {
                             setShowWordBattles(true);
+                          } else if (mode.id === "grammar-detective") {
+                            navigate("/grammar-detective");
                           } else {
                             setSelectedMode(mode.id);
                           }
