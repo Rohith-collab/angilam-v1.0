@@ -739,7 +739,14 @@ const GameArena = () => {
                       ? "border-border hover:border-muted opacity-75"
                       : "border-border hover:border-electric-500/70 dark:hover:border-electric-500/50 glow-electric"
                   }`}
-                  onClick={() => !mode.isLocked && setSelectedMode(mode.id)}
+                  onClick={() => {
+                    if (mode.isLocked) return;
+                    if (mode.id === "grammar-detective") {
+                      navigate("/game/grammar-detective");
+                    } else {
+                      setSelectedMode(mode.id);
+                    }
+                  }}
                   style={{ animationDelay: `${index * 100}ms` }}
                 >
                   <div className="absolute inset-0 bg-gradient-to-br from-transparent via-foreground/5 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
