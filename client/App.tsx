@@ -43,6 +43,7 @@ import Register from "./pages/Register";
 import NotFound from "./pages/NotFound";
 import GameArena from "./pages/GameArena";
 import GrammarDetective from "./pages/GrammarDetective";
+import SurvivalMode from "./pages/SurvivalMode";
 
 const queryClient = new QueryClient();
 
@@ -347,6 +348,14 @@ const App = () => (
                   element={
                     <ProtectedRoute>
                       <GrammarDetective />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/survival-mode"
+                  element={
+                    <ProtectedRoute>
+                      <SurvivalMode />
                     </ProtectedRoute>
                   }
                 />
