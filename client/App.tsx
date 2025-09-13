@@ -45,6 +45,7 @@ import GameArena from "./pages/GameArena";
 import GrammarDetective from "./pages/GrammarDetective";
 import SurvivalMode from "./pages/SurvivalMode";
 import JumbledWords from "./pages/JumbledWords";
+import WordBattles from "./pages/WordBattles";
 
 const queryClient = new QueryClient();
 
@@ -365,6 +366,14 @@ const App = () => (
                   element={
                     <ProtectedRoute>
                       <JumbledWords />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/word-battles"
+                  element={
+                    <ProtectedRoute>
+                      <WordBattles />
                     </ProtectedRoute>
                   }
                 />

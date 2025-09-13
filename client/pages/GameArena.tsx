@@ -748,7 +748,7 @@ const GameArena = () => {
                     } else if (mode.id === "jumbled-words") {
                       navigate("/jumbled-words");
                     } else if (mode.id === "word-building-battles") {
-                      setShowWordBattles(true);
+                      navigate("/word-battles");
                     } else {
                       setSelectedMode(mode.id);
                     }
@@ -826,7 +826,7 @@ const GameArena = () => {
                         e.stopPropagation();
                         if (!mode.isLocked) {
                           if (mode.id === "word-building-battles") {
-                            setShowWordBattles(true);
+                            navigate("/word-battles");
                           } else if (mode.id === "grammar-detective") {
                             navigate("/grammar-detective");
                           } else if (mode.id === "survival-mode") {
