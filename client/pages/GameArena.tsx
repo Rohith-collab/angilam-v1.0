@@ -101,7 +101,7 @@ const GameArena = () => {
       id: "survival-mode",
       title: "Survival Mode",
       description: "One life. Rising difficulty. Miss once and it's game over.",
-      difficulty: "Hard",
+      difficulty: "Easy",
       players: 1,
       duration: "5 min",
       reward: 200,
