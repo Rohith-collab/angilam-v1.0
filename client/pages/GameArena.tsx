@@ -62,6 +62,7 @@ interface LeaderboardEntry {
 
 const GameArena = () => {
   const { currentUser } = useAuth();
+  const navigate = useNavigate();
   const [selectedMode, setSelectedMode] = useState<string>("");
   const [showWordBattles, setShowWordBattles] = useState(false);
   const [userLevel, setUserLevel] = useState(15);
