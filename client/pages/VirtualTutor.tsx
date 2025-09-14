@@ -146,6 +146,26 @@ export default function VirtualTutor() {
     ]);
   }, []);
 
+  const toggleSound = useCallback(() => setSoundEnabled((s) => !s), []);
+
+  const toggleListening = useCallback(async () => {
+    if (!listening) {
+      await startConversation();
+      setListening(true);
+    } else {
+      setListening(false);
+      setIsConversing(false);
+    }
+  }, [listening, startConversation]);
+
+  const resetConversation = useCallback(() => {
+    setIsConversing(false);
+    setListening(false);
+    setMessages([
+      { id: crypto.randomUUID(), role: "assistant", text: "Conversation reset." },
+    ]);
+  }, []);
+
   const sendText = useCallback(async (text?: string) => {
     const agent = window.didAgent;
     const content = (text ?? input).trim();
