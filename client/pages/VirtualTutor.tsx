@@ -83,6 +83,27 @@ export default function VirtualTutor() {
     };
   }, []);
 
+  // Load user preferences (same storage as Humanoid Chat)
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("aangilam_preferences");
+      if (saved) setUserPreferences(JSON.parse(saved));
+    } catch {}
+  }, []);
+
+  // Apply mute/volume to media inside the avatar container
+  useEffect(() => {
+    const root = document.getElementById(containerId);
+    if (!root) return;
+    const media = root.querySelectorAll<HTMLMediaElement>("video, audio");
+    media.forEach((m) => {
+      try {
+        m.muted = !soundEnabled || muted;
+        if (soundEnabled && !muted) m.volume = 1;
+      } catch {}
+    });
+  }, [soundEnabled, muted, isAgentReady]);
+
   const quickPrompts = useMemo(
     () => [
       "Help me practice greetings",
