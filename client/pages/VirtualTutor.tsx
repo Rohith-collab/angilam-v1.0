@@ -193,14 +193,14 @@ export default function VirtualTutor() {
   }, [input, toast]);
 
   return (
-    <div className="virtual-tutor-page min-h-[calc(100vh-4rem)] w-full px-4 py-8 md:px-8 lg:px-12 bg-background">
+    <div className="virtual-tutor-page min-h-[calc(100vh-4rem)] w-full px-4 py-8 md:px-8 lg:px-12 bg-white">
       <div className="mx-auto max-w-7xl grid gap-6 lg:grid-cols-2">
         {/* Avatar panel */}
-        <Card className="relative overflow-hidden cyberpunk-fullscreen glow">
+        <Card className="relative overflow-hidden">
           <CardHeader>
             <div className="flex items-center justify-between">
               <div>
-                <CardTitle className="cyberpunk-clean-title sharp-text text-2xl">Angilam AI Tutor</CardTitle>
+                <CardTitle className="text-2xl font-semibold">Human tuoto</CardTitle>
                 <CardDescription>Practice speaking with real-time feedback</CardDescription>
               </div>
               <div className="flex items-center gap-2">
@@ -225,7 +225,7 @@ export default function VirtualTutor() {
             </div>
           </CardHeader>
           <CardContent>
-            <div className="aspect-[4/5] w-full overflow-hidden rounded-xl border bg-black relative">
+            <div className="aspect-[4/5] w-full overflow-hidden rounded-xl border bg-white relative">
               <div id={containerId} className="absolute inset-0" />
               <div className="absolute left-4 top-4 flex items-center gap-2 rounded-full bg-background/80 px-3 py-1 text-xs backdrop-blur-md border">
                 <span className={"size-2 rounded-full " + (isAgentReady ? "bg-green-500" : "bg-muted")}></span>
