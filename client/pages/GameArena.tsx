@@ -117,7 +117,6 @@ const GameArena = () => {
     },
   ];
 
-
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
       case "Easy":
@@ -975,9 +974,7 @@ const GameArena = () => {
           </div>
 
           {/* Leaderboard */}
-          <div className="space-y-6">
-
-          </div>
+          <div className="space-y-6"></div>
         </div>
       </div>
 
