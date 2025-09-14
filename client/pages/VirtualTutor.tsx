@@ -13,6 +13,7 @@ import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import {
   Mic,
+  MicOff,
   Send,
   Play,
   Square,
@@ -20,6 +21,7 @@ import {
   MessageSquare,
   Volume2,
   VolumeX,
+  RotateCcw,
   Bot,
 } from "lucide-react";
 
