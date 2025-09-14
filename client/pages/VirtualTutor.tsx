@@ -277,7 +277,7 @@ export default function VirtualTutor() {
             </div>
           </CardHeader>
           <CardContent>
-            <div className="aspect-[4/5] w-full overflow-hidden rounded-xl border bg-white relative">
+            <div className={`aspect-[4/5] w-full overflow-hidden rounded-xl border ${isAgentReady ? "bg-white" : "bg-black"} relative`}>
               <div id={containerId} className="absolute inset-0" />
               <div className="absolute left-4 top-4 flex items-center gap-2 rounded-full bg-background/80 px-3 py-1 text-xs backdrop-blur-md border">
                 <span
