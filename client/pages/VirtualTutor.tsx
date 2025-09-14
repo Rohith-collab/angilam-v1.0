@@ -251,11 +251,33 @@ export default function VirtualTutor() {
         {/* Chat panel */}
         <Card className="h-full flex flex-col">
           <CardHeader>
-            <div className="flex items-center gap-2">
-              <Bot className="size-5 text-primary" />
-              <CardTitle>Conversation</CardTitle>
+            <div className="flex items-center justify-between gap-2">
+              <div className="flex items-center gap-2">
+                <Bot className="size-5 text-primary" />
+                <div>
+                  <CardTitle>Conversation</CardTitle>
+                  <CardDescription>
+                    Type to chat with your tutor. Spoken replies play on the left.
+                    {userPreferences && (
+                      <span className="ml-2 text-xs text-muted-foreground">
+                        • {userPreferences.voice} • {userPreferences.language} • {userPreferences.speechSpeed}x
+                      </span>
+                    )}
+                  </CardDescription>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <Button variant="ghost" size="icon" onClick={toggleSound} title={soundEnabled ? "Sound on" : "Sound off"} className={soundEnabled ? "text-green-600" : "text-red-600"}>
+                  {soundEnabled ? <Volume2 className="size-4" /> : <VolumeX className="size-4" />}
+                </Button>
+                <Button variant="ghost" size="icon" onClick={toggleListening} title={listening ? "Stop listening" : "Start listening"}>
+                  {listening ? <MicOff className="size-4" /> : <Mic className="size-4" />}
+                </Button>
+                <Button variant="ghost" size="icon" onClick={resetConversation} title="Reset conversation">
+                  <RotateCcw className="size-4" />
+                </Button>
+              </div>
             </div>
-            <CardDescription>Type to chat with your tutor. Spoken replies play on the left.</CardDescription>
           </CardHeader>
           <Separator />
           <CardContent className="flex-1 overflow-y-auto space-y-3 max-h-[60vh] pr-1">
