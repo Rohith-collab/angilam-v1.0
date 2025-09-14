@@ -4,23 +4,18 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Gamepad2,
   Trophy,
   Zap,
   Crown,
-  Star,
   Target,
   Users,
   Clock,
   Flame,
-  Award,
   Play,
-  Volume2,
   Settings,
   ChevronRight,
-  Sparkles,
   Swords,
   Shield,
   Coins,
@@ -32,7 +27,6 @@ import {
   Search,
   AlertTriangle,
   Shuffle,
-  Info,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import WordBuildingBattles from "@/components/WordBuildingBattles";
@@ -121,36 +115,6 @@ const GameArena = () => {
       color: "from-nova-500 to-nova-600",
       isLocked: false,
     },
-    {
-      id: "accent-arena",
-      title: "Accent Arena",
-      description:
-        "Practice different English accents in this immersive challenge mode.",
-      difficulty: "Hard",
-      players: 1,
-      duration: "8 min",
-      reward: 250,
-      icon: <Volume2 className="h-6 w-6" />,
-      color: "from-cyan-500 to-cyan-600",
-      isLocked: false,
-    },
-  ];
-
-  const leaderboard: LeaderboardEntry[] = [
-    { rank: 1, name: "Sarah Chen", score: 15420, avatar: "SC", level: 28 },
-    { rank: 2, name: "Alex Rivera", score: 14850, avatar: "AR", level: 26 },
-    { rank: 3, name: "Emma Watson", score: 14200, avatar: "EW", level: 25 },
-    {
-      rank: 4,
-      name: "You",
-      score: 13950,
-      avatar: currentUser?.displayName?.charAt(0) || "U",
-      level: userLevel,
-      isCurrentUser: true,
-    },
-    { rank: 5, name: "David Kim", score: 13100, avatar: "DK", level: 23 },
-    { rank: 6, name: "Luna Garcia", score: 12800, avatar: "LG", level: 22 },
-    { rank: 7, name: "James Wilson", score: 12450, avatar: "JW", level: 21 },
   ];
 
   const getDifficultyColor = (difficulty: string) => {
@@ -189,7 +153,7 @@ const GameArena = () => {
   return (
     <div className="min-h-screen relative overflow-hidden bg-background">
       {/* Intense Gaming Background */}
-      <div className="fixed inset-0 z-0">
+      <div className="hidden">
         {/* Theme-aware cyberpunk base */}
         <div className="absolute inset-0 bg-gradient-to-br from-background via-nova-950/20 dark:via-nova-950/80 to-electric-950/20 dark:to-electric-950/60"></div>
 
@@ -472,10 +436,170 @@ const GameArena = () => {
         <div className="absolute inset-0 bg-gradient-to-br from-nova-200/20 dark:from-nova-900/40 via-transparent to-electric-200/20 dark:to-electric-900/30"></div>
       </div>
 
+      <div className="fixed inset-0 z-0 pointer-events-none">
+        <div className="absolute inset-0">
+          <div
+            className="absolute top-20 left-20 text-4xl font-bold text-electric-500/60 dark:text-electric-400/40 animate-float cyberpunk-alphabet"
+            style={{ animationDelay: "0s" }}
+          >
+            A
+          </div>
+          <div
+            className="absolute top-32 right-24 text-3xl font-bold text-cyber-500/50 dark:text-cyber-400/30 animate-particle-bounce cyberpunk-alphabet"
+            style={{ animationDelay: "1s" }}
+          >
+            B
+          </div>
+          <div
+            className="absolute top-48 left-1/4 text-5xl font-bold text-nova-500/70 dark:text-nova-400/50 animate-particle-orbit cyberpunk-alphabet"
+            style={{ animationDelay: "2s" }}
+          >
+            C
+          </div>
+          <div
+            className="absolute top-64 right-1/3 text-2xl font-bold text-pink-500/60 dark:text-pink-400/40 animate-particle-trail cyberpunk-alphabet"
+            style={{ animationDelay: "0.5s" }}
+          >
+            D
+          </div>
+          <div
+            className="absolute top-80 left-1/2 text-4xl font-bold text-cyan-500/50 dark:text-cyan-400/30 animate-float cyberpunk-alphabet"
+            style={{ animationDelay: "1.5s" }}
+          >
+            E
+          </div>
+          <div
+            className="absolute bottom-80 left-16 text-3xl font-bold text-electric-500/60 dark:text-electric-400/40 animate-particle-trail cyberpunk-alphabet"
+            style={{ animationDelay: "3s" }}
+          >
+            F
+          </div>
+          <div
+            className="absolute bottom-64 right-20 text-4xl font-bold text-cyber-500/70 dark:text-cyber-400/50 animate-particle-bounce cyberpunk-alphabet"
+            style={{ animationDelay: "2.5s" }}
+          >
+            G
+          </div>
+          <div
+            className="absolute bottom-48 left-1/3 text-2xl font-bold text-nova-500/50 dark:text-nova-400/30 animate-particle-orbit cyberpunk-alphabet"
+            style={{ animationDelay: "4s" }}
+          >
+            H
+          </div>
+          <div
+            className="absolute bottom-32 right-1/4 text-5xl font-bold text-purple-500/60 dark:text-purple-400/40 animate-float cyberpunk-alphabet"
+            style={{ animationDelay: "3.5s" }}
+          >
+            I
+          </div>
+          <div
+            className="absolute bottom-16 left-2/3 text-3xl font-bold text-yellow-500/50 dark:text-yellow-400/30 animate-particle-orbit cyberpunk-alphabet"
+            style={{ animationDelay: "5s" }}
+          >
+            J
+          </div>
+          <div
+            className="absolute top-1/3 left-12 text-4xl font-bold text-red-500/60 dark:text-red-400/40 animate-particle-bounce cyberpunk-alphabet"
+            style={{ animationDelay: "1.2s" }}
+          >
+            K
+          </div>
+          <div
+            className="absolute top-1/2 right-12 text-2xl font-bold text-green-500/50 dark:text-green-400/30 animate-float cyberpunk-alphabet"
+            style={{ animationDelay: "2.7s" }}
+          >
+            L
+          </div>
+          <div
+            className="absolute top-2/3 left-8 text-5xl font-bold text-blue-500/70 dark:text-blue-400/50 animate-particle-bounce cyberpunk-alphabet"
+            style={{ animationDelay: "4.2s" }}
+          >
+            M
+          </div>
+          <div
+            className="absolute bottom-1/3 right-8 text-3xl font-bold text-indigo-500/60 dark:text-indigo-400/40 animate-particle-trail cyberpunk-alphabet"
+            style={{ animationDelay: "3.8s" }}
+          >
+            N
+          </div>
+          <div
+            className="absolute top-1/4 right-1/2 text-4xl font-bold text-teal-500/50 dark:text-teal-400/30 animate-particle-orbit cyberpunk-alphabet"
+            style={{ animationDelay: "5.5s" }}
+          >
+            O
+          </div>
+          <div
+            className="absolute top-3/4 left-1/4 text-2xl font-bold text-orange-500/60 dark:text-orange-400/40 animate-float cyberpunk-alphabet"
+            style={{ animationDelay: "6s" }}
+          >
+            P
+          </div>
+          <div
+            className="absolute top-1/6 right-1/6 text-5xl font-bold text-emerald-500/70 dark:text-emerald-400/50 animate-particle-bounce cyberpunk-alphabet"
+            style={{ animationDelay: "2.3s" }}
+          >
+            Q
+          </div>
+          <div
+            className="absolute bottom-1/6 left-1/6 text-3xl font-bold text-rose-500/50 dark:text-rose-400/30 animate-float cyberpunk-alphabet"
+            style={{ animationDelay: "4.7s" }}
+          >
+            R
+          </div>
+          <div
+            className="absolute top-5/6 right-2/3 text-4xl font-bold text-violet-500/60 dark:text-violet-400/40 animate-particle-trail cyberpunk-alphabet"
+            style={{ animationDelay: "3.2s" }}
+          >
+            S
+          </div>
+          <div
+            className="absolute top-1/8 left-3/4 text-2xl font-bold text-amber-500/50 dark:text-amber-400/30 animate-particle-orbit cyberpunk-alphabet"
+            style={{ animationDelay: "5.8s" }}
+          >
+            T
+          </div>
+          <div
+            className="absolute bottom-1/8 right-3/4 text-5xl font-bold text-lime-500/70 dark:text-lime-400/50 animate-float cyberpunk-alphabet"
+            style={{ animationDelay: "1.8s" }}
+          >
+            U
+          </div>
+          <div
+            className="absolute top-7/8 left-1/8 text-3xl font-bold text-sky-500/60 dark:text-sky-400/40 animate-particle-bounce cyberpunk-alphabet"
+            style={{ animationDelay: "4.5s" }}
+          >
+            V
+          </div>
+          <div
+            className="absolute top-3/8 right-1/8 text-4xl font-bold text-fuchsia-500/50 dark:text-fuchsia-400/30 animate-float cyberpunk-alphabet"
+            style={{ animationDelay: "6.2s" }}
+          >
+            W
+          </div>
+          <div
+            className="absolute bottom-3/8 left-7/8 text-2xl font-bold text-zinc-500/60 dark:text-zinc-400/40 animate-particle-trail cyberpunk-alphabet"
+            style={{ animationDelay: "2.9s" }}
+          >
+            X
+          </div>
+          <div
+            className="absolute top-5/8 right-7/8 text-5xl font-bold text-slate-500/70 dark:text-slate-400/50 animate-particle-orbit cyberpunk-alphabet"
+            style={{ animationDelay: "5.3s" }}
+          >
+            Y
+          </div>
+          <div
+            className="absolute bottom-5/8 left-5/8 text-3xl font-bold text-stone-500/50 dark:text-stone-400/30 animate-float cyberpunk-alphabet"
+            style={{ animationDelay: "3.7s" }}
+          >
+            Z
+          </div>
+        </div>
+      </div>
+
       {/* Hero Section */}
       <div className="relative z-10 overflow-hidden min-h-[60vh] sm:min-h-[80vh] flex items-center">
         {/* Gaming arena atmosphere */}
-        <div className="absolute inset-0 bg-gradient-to-br from-nova-500/30 dark:from-nova-500/20 via-transparent to-electric-500/30 dark:to-electric-500/20 animate-arena-pulse"></div>
 
         {/* HUD overlay */}
         <div className="absolute inset-0 pointer-events-none">
@@ -711,7 +835,6 @@ const GameArena = () => {
 
       <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Gaming section background overlay */}
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/90 dark:via-background/80 to-background z-0 rounded-3xl"></div>
         <div className="relative z-10 grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Game Modes */}
           <div id="game-modes-section" className="lg:col-span-2 space-y-6">
@@ -851,144 +974,7 @@ const GameArena = () => {
           </div>
 
           {/* Leaderboard */}
-          <div className="space-y-6">
-            <Card className="bg-card/90 dark:bg-card/80 backdrop-blur-md border-border gaming-card">
-              <CardHeader>
-                <CardTitle className="text-foreground flex items-center">
-                  <Trophy className="h-5 w-5 text-yellow-400 mr-2" />
-                  Global Leaderboard
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                {leaderboard.map((entry, index) => (
-                  <div
-                    key={entry.rank}
-                    className={`flex items-center space-x-3 p-3 rounded-xl transition-all duration-300 ${
-                      entry.isCurrentUser
-                        ? "bg-electric-500/20 border border-electric-500/30 glow-electric"
-                        : "bg-muted/30 hover:bg-muted/50"
-                    }`}
-                    style={{ animationDelay: `${index * 50}ms` }}
-                  >
-                    <div
-                      className={`flex items-center justify-center w-8 h-8 rounded-lg font-bold text-sm ${
-                        entry.rank === 1
-                          ? "bg-yellow-500 text-black"
-                          : entry.rank === 2
-                            ? "bg-gray-300 text-black"
-                            : entry.rank === 3
-                              ? "bg-orange-500 text-white"
-                              : "bg-muted text-muted-foreground"
-                      }`}
-                    >
-                      {entry.rank}
-                    </div>
-
-                    <Avatar className="h-8 w-8">
-                      <AvatarFallback
-                        className={`text-sm font-bold ${
-                          entry.isCurrentUser
-                            ? "bg-electric-500 text-white"
-                            : "bg-muted text-muted-foreground"
-                        }`}
-                      >
-                        {entry.avatar}
-                      </AvatarFallback>
-                    </Avatar>
-
-                    <div className="flex-1 min-w-0">
-                      <p
-                        className={`text-sm font-medium truncate ${
-                          entry.isCurrentUser
-                            ? "text-electric-400"
-                            : "text-foreground"
-                        }`}
-                      >
-                        {entry.name}
-                      </p>
-                      <p className="text-xs text-muted-foreground">
-                        Level {entry.level}
-                      </p>
-                    </div>
-
-                    <div className="text-right">
-                      <p className="text-sm font-bold text-cyan-400">
-                        {entry.score.toLocaleString()}
-                      </p>
-                      <p className="text-xs text-muted-foreground">points</p>
-                    </div>
-                  </div>
-                ))}
-
-                <Button
-                  variant="ghost"
-                  className="w-full text-muted-foreground hover:text-foreground mt-4"
-                >
-                  View Full Leaderboard
-                  <ChevronRight className="h-4 w-4 ml-2" />
-                </Button>
-              </CardContent>
-            </Card>
-
-            {/* Daily Challenges */}
-            <Card className="bg-card/90 dark:bg-card/80 backdrop-blur-md border-border gaming-card">
-              <CardHeader>
-                <CardTitle className="text-foreground flex items-center">
-                  <Star className="h-5 w-5 text-yellow-400 mr-2" />
-                  Daily Challenges
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="p-4 bg-gradient-to-r from-nova-500/30 dark:from-nova-500/20 to-electric-500/30 dark:to-electric-500/20 rounded-xl border border-nova-500/50 dark:border-nova-500/30">
-                  <div className="flex items-center justify-between mb-2">
-                    <h3 className="font-semibold text-foreground">
-                      Word Master
-                    </h3>
-                    <Badge
-                      variant="outline"
-                      className="bg-nova-500/30 dark:bg-nova-500/20 text-nova-600 dark:text-nova-400 border-nova-500/50 dark:border-nova-500/30"
-                    >
-                      2/3 Complete
-                    </Badge>
-                  </div>
-                  <p className="text-sm text-muted-foreground mb-3">
-                    Complete 3 Word Building Battles today
-                  </p>
-                  <div className="flex items-center justify-between">
-                    <Progress value={66} className="flex-1 mr-3 h-2" />
-                    <span className="text-xs text-yellow-400 font-medium flex items-center">
-                      <Coins className="h-3 w-3 mr-1" />
-                      +100
-                    </span>
-                  </div>
-                </div>
-
-                <div className="p-4 bg-gradient-to-r from-cyber-500/30 dark:from-cyber-500/20 to-green-500/30 dark:to-green-500/20 rounded-xl border border-cyber-500/50 dark:border-cyber-500/30">
-                  <div className="flex items-center justify-between mb-2">
-                    <h3 className="font-semibold text-foreground">
-                      Accent Expert
-                    </h3>
-                    <Badge
-                      variant="outline"
-                      className="bg-cyber-500/30 dark:bg-cyber-500/20 text-cyber-600 dark:text-cyber-400 border-cyber-500/50 dark:border-cyber-500/30"
-                    >
-                      1/5 Complete
-                    </Badge>
-                  </div>
-                  <p className="text-sm text-muted-foreground mb-3">
-                    Master 5 different accents in Accent Arena
-                  </p>
-                  <div className="flex items-center justify-between">
-                    <Progress value={20} className="flex-1 mr-3 h-2" />
-                    <span className="text-xs text-yellow-400 font-medium flex items-center">
-                      <Award className="h-3 w-3 mr-1" />
-                      Badge
-                    </span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+          <div className="space-y-6"></div>
         </div>
       </div>
 
@@ -998,20 +984,6 @@ const GameArena = () => {
         className="relative py-16 sm:py-24 overflow-hidden"
       >
         {/* Section background with gaming effects */}
-        <div className="absolute inset-0 bg-gradient-to-br from-background via-nova-100/20 dark:via-nova-900/10 to-background"></div>
-        <div className="absolute inset-0 opacity-15 dark:opacity-10">
-          <div
-            className="w-full h-full"
-            style={{
-              backgroundImage: `
-                radial-gradient(circle at 25% 25%, rgba(138, 43, 226, 0.4) 0%, transparent 50%),
-                radial-gradient(circle at 75% 75%, rgba(34, 197, 94, 0.3) 0%, transparent 50%),
-                radial-gradient(circle at 50% 50%, rgba(59, 130, 246, 0.4) 0%, transparent 50%)
-              `,
-              animation: "gradient 15s ease infinite",
-            }}
-          ></div>
-        </div>
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12 sm:mb-16">
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-6">
