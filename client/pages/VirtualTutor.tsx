@@ -200,7 +200,7 @@ export default function VirtualTutor() {
           <CardHeader>
             <div className="flex items-center justify-between">
               <div>
-                <CardTitle className="text-2xl font-semibold">Human tuoto</CardTitle>
+                <CardTitle className="text-2xl font-semibold">Human Tutor</CardTitle>
                 <CardDescription>Practice speaking with real-time feedback</CardDescription>
               </div>
               <div className="flex items-center gap-2">
@@ -238,18 +238,11 @@ export default function VirtualTutor() {
               </div>
             </div>
           </CardContent>
-          <CardFooter className="flex flex-wrap gap-2">
-            {quickPrompts.map((p) => (
-              <Button key={p} variant="secondary" size="sm" onClick={() => sendText(p)}>
-                <Sparkles className="size-3" />
-                <span className="ml-1">{p}</span>
-              </Button>
-            ))}
-          </CardFooter>
+          <CardFooter />
         </Card>
 
         {/* Chat panel */}
-        <Card className="h-full flex flex-col">
+        <Card className="h-full flex flex-col -ml-px">
           <CardHeader>
             <div className="flex items-center justify-between gap-2">
               <div className="flex items-center gap-2">
@@ -310,7 +303,7 @@ export default function VirtualTutor() {
               ))
             )}
           </CardContent>
-          <CardFooter>
+          <CardFooter className="mt-24">
             <form
               className="flex w-full items-end gap-2"
               onSubmit={(e) => {
