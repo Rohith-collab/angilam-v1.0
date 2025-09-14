@@ -90,8 +90,8 @@ export default function VirtualTutor() {
             fontSize: 14,
             cursor: "pointer",
           }}
-          onMouseOver={(e) => ((e.currentTarget.style.background = "#0056b3"))}
-          onMouseOut={(e) => ((e.currentTarget.style.background = "#007bff"))}
+          onMouseOver={(e) => (e.currentTarget.style.background = "#0056b3")}
+          onMouseOut={(e) => (e.currentTarget.style.background = "#007bff")}
         >
           Start Chat
         </button>
@@ -106,8 +106,8 @@ export default function VirtualTutor() {
             fontSize: 14,
             cursor: "pointer",
           }}
-          onMouseOver={(e) => ((e.currentTarget.style.background = "#0056b3"))}
-          onMouseOut={(e) => ((e.currentTarget.style.background = "#007bff"))}
+          onMouseOver={(e) => (e.currentTarget.style.background = "#0056b3")}
+          onMouseOut={(e) => (e.currentTarget.style.background = "#007bff")}
         >
           Send Message
         </button>
