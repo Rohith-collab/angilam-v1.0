@@ -1164,6 +1164,21 @@
     }
   }
 
+  /* Disable scanner animation on Virtual Tutor page */
+  .virtual-tutor-page .cyberpunk-fullscreen::before,
+  .virtual-tutor-page .cyberpunk-fullscreen-overlay::before {
+    animation: none;
+    background: none;
+  }
+
+  /* Remove grid line appearance on Virtual Tutor page */
+  .virtual-tutor-page .cyberpunk-fullscreen::after,
+  .virtual-tutor-page .cyberpunk-fullscreen-overlay::after {
+    animation: none;
+    background: none;
+    opacity: 0;
+  }
+
   @keyframes cyberpunk-matrix {
     0% {
       transform: translateX(0) translateY(0);
