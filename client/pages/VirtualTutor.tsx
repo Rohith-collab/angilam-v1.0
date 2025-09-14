@@ -42,6 +42,9 @@ export default function VirtualTutor() {
   const [isAgentReady, setIsAgentReady] = useState(false);
   const [isConversing, setIsConversing] = useState(false);
   const [muted, setMuted] = useState(false);
+  const [soundEnabled, setSoundEnabled] = useState(true);
+  const [listening, setListening] = useState(false);
+  const [userPreferences, setUserPreferences] = useState<any | null>(null);
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const { toast } = useToast();
