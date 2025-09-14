@@ -1,4 +1,28 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import { useToast } from "@/hooks/use-toast";
+import {
+  Mic,
+  Send,
+  Play,
+  Square,
+  Sparkles,
+  MessageSquare,
+  Volume2,
+  VolumeX,
+  Bot,
+} from "lucide-react";
 
 declare global {
   interface Window {
@@ -11,9 +35,23 @@ declare global {
 
 const containerId = "avatar-container";
 
+type ChatMessage = { id: string; role: "user" | "assistant"; text: string };
+
 export default function VirtualTutor() {
+  const [isAgentReady, setIsAgentReady] = useState(false);
+  const [isConversing, setIsConversing] = useState(false);
+  const [muted, setMuted] = useState(false);
+  const [input, setInput] = useState("");
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const { toast } = useToast();
+  const pollRef = useRef<number | null>(null);
+
   useEffect(() => {
-    // Inject D-ID Agent SDK
+    const existing = document.querySelector(
+      `script[src="https://agent.d-id.com/v2/index.js"]`,
+    );
+    if (existing) existing.remove();
+
     const script = document.createElement("script");
     script.type = "module";
     script.src = "https://agent.d-id.com/v2/index.js";
@@ -25,92 +63,212 @@ export default function VirtualTutor() {
 
     document.body.appendChild(script);
 
+    // Poll for readiness
+    pollRef.current = window.setInterval(() => {
+      if (window.didAgent) {
+        setIsAgentReady(true);
+        if (pollRef.current) window.clearInterval(pollRef.current);
+        pollRef.current = null;
+      }
+    }, 300);
+
     return () => {
+      if (pollRef.current) window.clearInterval(pollRef.current);
+      pollRef.current = null;
       script.remove();
     };
   }, []);
 
+  const quickPrompts = useMemo(
+    () => [
+      "Help me practice greetings",
+      "Correct my pronunciation",
+      "Explain this grammar rule",
+      "Give me a vocabulary quiz",
+      "Role-play a restaurant scene",
+    ],
+    [],
+  );
+
   const startConversation = useCallback(async () => {
     const agent = window.didAgent;
     if (!agent) {
-      alert("Agent not ready yet!");
+      toast({ title: "Agent not ready", description: "Please wait a moment.", variant: "destructive" });
       return;
     }
-    await agent.startConversation();
+    try {
+      await agent.startConversation();
+      setIsConversing(true);
+      setMessages((m) => [
+        ...m,
+        {
+          id: crypto.randomUUID(),
+          role: "assistant",
+          text: "Voice session started. You can speak to your tutor now.",
+        },
+      ]);
+    } catch (e) {
+      toast({ title: "Could not start conversation", description: String(e), variant: "destructive" });
+    }
+  }, [toast]);
+
+  const stopConversation = useCallback(() => {
+    // D-ID SDK handles end-of-utterance; we provide a UX stop state.
+    setIsConversing(false);
+    setMessages((m) => [
+      ...m,
+      { id: crypto.randomUUID(), role: "assistant", text: "Voice session stopped." },
+    ]);
   }, []);
 
-  const sendMessage = useCallback(async () => {
+  const sendText = useCallback(async (text?: string) => {
     const agent = window.didAgent;
+    const content = (text ?? input).trim();
+    if (!content) return;
     if (!agent) {
-      alert("Agent not ready yet!");
+      toast({ title: "Agent not ready", description: "Please wait a moment.", variant: "destructive" });
       return;
     }
-    await agent.sendMessage("Hello, I want to learn English with Angilam.");
-  }, []);
+    setMessages((m) => [...m, { id: crypto.randomUUID(), role: "user", text: content }]);
+    setInput("");
+    try {
+      await agent.sendMessage(content);
+      // We optimistically show that the tutor is responding
+      setMessages((m) => [
+        ...m,
+        {
+          id: crypto.randomUUID(),
+          role: "assistant",
+          text: "Responding… check the avatar for the spoken answer.",
+        },
+      ]);
+    } catch (e) {
+      toast({ title: "Send failed", description: String(e), variant: "destructive" });
+    }
+  }, [input, toast]);
 
   return (
-    <div
-      style={{
-        fontFamily: "Arial, sans-serif",
-        margin: 0,
-        padding: 0,
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        minHeight: "calc(100vh - 4rem)",
-        background: "#f4f4f9",
-      }}
-      className="w-full"
-    >
-      <h1 style={{ marginBottom: 10 }}>Angilam AI Tutor</h1>
+    <div className="min-h-[calc(100vh-4rem)] w-full px-4 py-8 md:px-8 lg:px-12 bg-background">
+      <div className="mx-auto max-w-7xl grid gap-6 lg:grid-cols-2">
+        {/* Avatar panel */}
+        <Card className="relative overflow-hidden cyberpunk-fullscreen glow">
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle className="cyberpunk-clean-title sharp-text text-2xl">Angilam AI Tutor</CardTitle>
+                <CardDescription>Practice speaking with real-time feedback</CardDescription>
+              </div>
+              <div className="flex items-center gap-2">
+                <Button
+                  size="icon"
+                  variant={muted ? "secondary" : "outline"}
+                  aria-label={muted ? "Unmute" : "Mute"}
+                  onClick={() => setMuted((m) => !m)}
+                >
+                  {muted ? <VolumeX className="size-4" /> : <Volume2 className="size-4" />}
+                </Button>
+                {!isConversing ? (
+                  <Button onClick={startConversation} disabled={!isAgentReady} className="gap-2">
+                    <Play className="size-4" /> Start Chat
+                  </Button>
+                ) : (
+                  <Button onClick={stopConversation} variant="destructive" className="gap-2">
+                    <Square className="size-4" /> Stop
+                  </Button>
+                )}
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="aspect-[4/5] w-full overflow-hidden rounded-xl border bg-black relative">
+              <div id={containerId} className="absolute inset-0" />
+              <div className="absolute left-4 top-4 flex items-center gap-2 rounded-full bg-background/80 px-3 py-1 text-xs backdrop-blur-md border">
+                <span className={"size-2 rounded-full " + (isAgentReady ? "bg-green-500" : "bg-muted")}></span>
+                <span>{isAgentReady ? "Ready" : "Loading…"}</span>
+              </div>
+              <div className="absolute right-4 bottom-4 flex items-center gap-2">
+                <Button size="icon" variant="secondary" className="shadow-md" title="Push-to-talk" onClick={startConversation} disabled={!isAgentReady}>
+                  <Mic className="size-4" />
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+          <CardFooter className="flex flex-wrap gap-2">
+            {quickPrompts.map((p) => (
+              <Button key={p} variant="secondary" size="sm" onClick={() => sendText(p)}>
+                <Sparkles className="size-3" />
+                <span className="ml-1">{p}</span>
+              </Button>
+            ))}
+          </CardFooter>
+        </Card>
 
-      <div
-        id={containerId}
-        style={{
-          width: 400,
-          height: 500,
-          borderRadius: 20,
-          overflow: "hidden",
-          boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
-          marginBottom: 20,
-          background: "#000",
-        }}
-      />
-
-      <div style={{ display: "flex", gap: 10 }}>
-        <button
-          onClick={startConversation}
-          style={{
-            padding: "10px 16px",
-            border: "none",
-            borderRadius: 8,
-            background: "#007bff",
-            color: "white",
-            fontSize: 14,
-            cursor: "pointer",
-          }}
-          onMouseOver={(e) => (e.currentTarget.style.background = "#0056b3")}
-          onMouseOut={(e) => (e.currentTarget.style.background = "#007bff")}
-        >
-          Start Chat
-        </button>
-        <button
-          onClick={sendMessage}
-          style={{
-            padding: "10px 16px",
-            border: "none",
-            borderRadius: 8,
-            background: "#007bff",
-            color: "white",
-            fontSize: 14,
-            cursor: "pointer",
-          }}
-          onMouseOver={(e) => (e.currentTarget.style.background = "#0056b3")}
-          onMouseOut={(e) => (e.currentTarget.style.background = "#007bff")}
-        >
-          Send Message
-        </button>
+        {/* Chat panel */}
+        <Card className="h-full flex flex-col">
+          <CardHeader>
+            <div className="flex items-center gap-2">
+              <Bot className="size-5 text-primary" />
+              <CardTitle>Conversation</CardTitle>
+            </div>
+            <CardDescription>Type to chat with your tutor. Spoken replies play on the left.</CardDescription>
+          </CardHeader>
+          <Separator />
+          <CardContent className="flex-1 overflow-y-auto space-y-3 max-h-[60vh] pr-1">
+            {messages.length === 0 ? (
+              <div className="text-center text-muted-foreground text-sm py-12">
+                Start a conversation or use a quick prompt to begin.
+              </div>
+            ) : (
+              messages.map((m) => (
+                <div key={m.id} className={"flex items-start gap-3 " + (m.role === "user" ? "justify-end" : "justify-start") }>
+                  {m.role === "assistant" && (
+                    <div className="mt-1 size-6 shrink-0 rounded-full bg-nova-500/20 text-nova-700 dark:text-nova-200 flex items-center justify-center">
+                      <MessageSquare className="size-3" />
+                    </div>
+                  )}
+                  <div className={
+                    "max-w-[80%] rounded-lg px-3 py-2 text-sm shadow-sm " +
+                    (m.role === "user"
+                      ? "bg-primary text-primary-foreground"
+                      : "bg-muted text-foreground")
+                  }>
+                    {m.text}
+                  </div>
+                  {m.role === "user" && (
+                    <div className="mt-1 size-6 shrink-0 rounded-full bg-electric-500/20 text-electric-700 dark:text-electric-200 flex items-center justify-center">
+                      <span className="text-[10px] font-bold">You</span>
+                    </div>
+                  )}
+                </div>
+              ))
+            )}
+          </CardContent>
+          <CardFooter>
+            <form
+              className="flex w-full items-end gap-2"
+              onSubmit={(e) => {
+                e.preventDefault();
+                sendText();
+              }}
+            >
+              <Textarea
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                placeholder="Type your message..."
+                className="min-h-12 h-12 resize-none"
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !e.shiftKey) {
+                    e.preventDefault();
+                    sendText();
+                  }
+                }}
+              />
+              <Button type="submit" disabled={!isAgentReady || input.trim().length === 0} className="gap-2">
+                <Send className="size-4" /> Send
+              </Button>
+            </form>
+          </CardFooter>
+        </Card>
       </div>
     </div>
   );
