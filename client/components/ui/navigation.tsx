@@ -22,7 +22,7 @@ const navigation = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
   { name: "Practice Mode", href: "/practice", icon: Play },
   { name: "Game Arena", href: "/game-arena", icon: Gamepad2 },
-  { name: "Humanoid Tutor", href: "/humanoid", icon: Bot },
+  { name: "Virtual Tutor", href: "/virtual-tutor", icon: Bot },
   { name: "Settings", href: "/settings", icon: Settings },
 ];
 
