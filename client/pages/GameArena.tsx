@@ -9,17 +9,13 @@ import {
   Trophy,
   Zap,
   Crown,
-  Star,
   Target,
   Users,
   Clock,
   Flame,
-  Award,
   Play,
-  Volume2,
   Settings,
   ChevronRight,
-  Sparkles,
   Swords,
   Shield,
   Coins,
@@ -31,7 +27,6 @@ import {
   Search,
   AlertTriangle,
   Shuffle,
-  Info,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import WordBuildingBattles from "@/components/WordBuildingBattles";
@@ -982,41 +977,6 @@ const GameArena = () => {
           {/* Leaderboard */}
           <div className="space-y-6">
 
-            {/* Daily Challenges */}
-            <Card className="bg-card/90 dark:bg-card/80 backdrop-blur-md border-border gaming-card">
-              <CardHeader>
-                <CardTitle className="text-foreground flex items-center">
-                  <Star className="h-5 w-5 text-yellow-400 mr-2" />
-                  Daily Challenges
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="p-4 bg-gradient-to-r from-nova-500/30 dark:from-nova-500/20 to-electric-500/30 dark:to-electric-500/20 rounded-xl border border-nova-500/50 dark:border-nova-500/30">
-                  <div className="flex items-center justify-between mb-2">
-                    <h3 className="font-semibold text-foreground">
-                      Word Master
-                    </h3>
-                    <Badge
-                      variant="outline"
-                      className="bg-nova-500/30 dark:bg-nova-500/20 text-nova-600 dark:text-nova-400 border-nova-500/50 dark:border-nova-500/30"
-                    >
-                      2/3 Complete
-                    </Badge>
-                  </div>
-                  <p className="text-sm text-muted-foreground mb-3">
-                    Complete 3 Word Building Battles today
-                  </p>
-                  <div className="flex items-center justify-between">
-                    <Progress value={66} className="flex-1 mr-3 h-2" />
-                    <span className="text-xs text-yellow-400 font-medium flex items-center">
-                      <Coins className="h-3 w-3 mr-1" />
-                      +100
-                    </span>
-                  </div>
-                </div>
-
-              </CardContent>
-            </Card>
           </div>
         </div>
       </div>
