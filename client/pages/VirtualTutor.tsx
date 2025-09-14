@@ -193,7 +193,7 @@ export default function VirtualTutor() {
   }, [input, toast]);
 
   return (
-    <div className="min-h-[calc(100vh-4rem)] w-full px-4 py-8 md:px-8 lg:px-12 bg-background">
+    <div className="virtual-tutor-page min-h-[calc(100vh-4rem)] w-full px-4 py-8 md:px-8 lg:px-12 bg-background">
       <div className="mx-auto max-w-7xl grid gap-6 lg:grid-cols-2">
         {/* Avatar panel */}
         <Card className="relative overflow-hidden cyberpunk-fullscreen glow">
