@@ -189,7 +189,7 @@ const GameArena = () => {
   return (
     <div className="min-h-screen relative overflow-hidden bg-background">
       {/* Intense Gaming Background */}
-      <div className="fixed inset-0 z-0">
+      <div className="hidden">
         {/* Theme-aware cyberpunk base */}
         <div className="absolute inset-0 bg-gradient-to-br from-background via-nova-950/20 dark:via-nova-950/80 to-electric-950/20 dark:to-electric-950/60"></div>
 
@@ -475,7 +475,6 @@ const GameArena = () => {
       {/* Hero Section */}
       <div className="relative z-10 overflow-hidden min-h-[60vh] sm:min-h-[80vh] flex items-center">
         {/* Gaming arena atmosphere */}
-        <div className="absolute inset-0 bg-gradient-to-br from-nova-500/30 dark:from-nova-500/20 via-transparent to-electric-500/30 dark:to-electric-500/20 animate-arena-pulse"></div>
 
         {/* HUD overlay */}
         <div className="absolute inset-0 pointer-events-none">
@@ -711,7 +710,6 @@ const GameArena = () => {
 
       <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Gaming section background overlay */}
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/90 dark:via-background/80 to-background z-0 rounded-3xl"></div>
         <div className="relative z-10 grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Game Modes */}
           <div id="game-modes-section" className="lg:col-span-2 space-y-6">
@@ -998,20 +996,6 @@ const GameArena = () => {
         className="relative py-16 sm:py-24 overflow-hidden"
       >
         {/* Section background with gaming effects */}
-        <div className="absolute inset-0 bg-gradient-to-br from-background via-nova-100/20 dark:via-nova-900/10 to-background"></div>
-        <div className="absolute inset-0 opacity-15 dark:opacity-10">
-          <div
-            className="w-full h-full"
-            style={{
-              backgroundImage: `
-                radial-gradient(circle at 25% 25%, rgba(138, 43, 226, 0.4) 0%, transparent 50%),
-                radial-gradient(circle at 75% 75%, rgba(34, 197, 94, 0.3) 0%, transparent 50%),
-                radial-gradient(circle at 50% 50%, rgba(59, 130, 246, 0.4) 0%, transparent 50%)
-              `,
-              animation: "gradient 15s ease infinite",
-            }}
-          ></div>
-        </div>
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12 sm:mb-16">
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-6">
