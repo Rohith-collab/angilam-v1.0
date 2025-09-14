@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import {
@@ -118,7 +124,11 @@ export default function VirtualTutor() {
   const startConversation = useCallback(async () => {
     const agent = window.didAgent;
     if (!agent) {
-      toast({ title: "Agent not ready", description: "Please wait a moment.", variant: "destructive" });
+      toast({
+        title: "Agent not ready",
+        description: "Please wait a moment.",
+        variant: "destructive",
+      });
       return;
     }
     try {
@@ -133,7 +143,11 @@ export default function VirtualTutor() {
         },
       ]);
     } catch (e) {
-      toast({ title: "Could not start conversation", description: String(e), variant: "destructive" });
+      toast({
+        title: "Could not start conversation",
+        description: String(e),
+        variant: "destructive",
+      });
     }
   }, [toast]);
 
@@ -142,7 +156,11 @@ export default function VirtualTutor() {
     setIsConversing(false);
     setMessages((m) => [
       ...m,
-      { id: crypto.randomUUID(), role: "assistant", text: "Voice session stopped." },
+      {
+        id: crypto.randomUUID(),
+        role: "assistant",
+        text: "Voice session stopped.",
+      },
     ]);
   }, []);
 
@@ -162,35 +180,53 @@ export default function VirtualTutor() {
     setIsConversing(false);
     setListening(false);
     setMessages([
-      { id: crypto.randomUUID(), role: "assistant", text: "Conversation reset." },
+      {
+        id: crypto.randomUUID(),
+        role: "assistant",
+        text: "Conversation reset.",
+      },
     ]);
   }, []);
 
-  const sendText = useCallback(async (text?: string) => {
-    const agent = window.didAgent;
-    const content = (text ?? input).trim();
-    if (!content) return;
-    if (!agent) {
-      toast({ title: "Agent not ready", description: "Please wait a moment.", variant: "destructive" });
-      return;
-    }
-    setMessages((m) => [...m, { id: crypto.randomUUID(), role: "user", text: content }]);
-    setInput("");
-    try {
-      await agent.sendMessage(content);
-      // We optimistically show that the tutor is responding
+  const sendText = useCallback(
+    async (text?: string) => {
+      const agent = window.didAgent;
+      const content = (text ?? input).trim();
+      if (!content) return;
+      if (!agent) {
+        toast({
+          title: "Agent not ready",
+          description: "Please wait a moment.",
+          variant: "destructive",
+        });
+        return;
+      }
       setMessages((m) => [
         ...m,
-        {
-          id: crypto.randomUUID(),
-          role: "assistant",
-          text: "Responding… check the avatar for the spoken answer.",
-        },
+        { id: crypto.randomUUID(), role: "user", text: content },
       ]);
-    } catch (e) {
-      toast({ title: "Send failed", description: String(e), variant: "destructive" });
-    }
-  }, [input, toast]);
+      setInput("");
+      try {
+        await agent.sendMessage(content);
+        // We optimistically show that the tutor is responding
+        setMessages((m) => [
+          ...m,
+          {
+            id: crypto.randomUUID(),
+            role: "assistant",
+            text: "Responding… check the avatar for the spoken answer.",
+          },
+        ]);
+      } catch (e) {
+        toast({
+          title: "Send failed",
+          description: String(e),
+          variant: "destructive",
+        });
+      }
+    },
+    [input, toast],
+  );
 
   return (
     <div className="virtual-tutor-page min-h-[calc(100vh-4rem)] w-full px-4 py-8 md:px-8 lg:px-12 bg-white">
@@ -200,8 +236,12 @@ export default function VirtualTutor() {
           <CardHeader>
             <div className="flex items-center justify-between">
               <div>
-                <CardTitle className="text-2xl font-semibold">Human Tutor</CardTitle>
-                <CardDescription>Practice speaking with real-time feedback</CardDescription>
+                <CardTitle className="text-2xl font-semibold">
+                  Human Tutor
+                </CardTitle>
+                <CardDescription>
+                  Practice speaking with real-time feedback
+                </CardDescription>
               </div>
               <div className="flex items-center gap-2">
                 <Button
@@ -210,14 +250,26 @@ export default function VirtualTutor() {
                   aria-label={muted ? "Unmute" : "Mute"}
                   onClick={() => setMuted((m) => !m)}
                 >
-                  {muted ? <VolumeX className="size-4" /> : <Volume2 className="size-4" />}
+                  {muted ? (
+                    <VolumeX className="size-4" />
+                  ) : (
+                    <Volume2 className="size-4" />
+                  )}
                 </Button>
                 {!isConversing ? (
-                  <Button onClick={startConversation} disabled={!isAgentReady} className="gap-2">
+                  <Button
+                    onClick={startConversation}
+                    disabled={!isAgentReady}
+                    className="gap-2"
+                  >
                     <Play className="size-4" /> Start Chat
                   </Button>
                 ) : (
-                  <Button onClick={stopConversation} variant="destructive" className="gap-2">
+                  <Button
+                    onClick={stopConversation}
+                    variant="destructive"
+                    className="gap-2"
+                  >
                     <Square className="size-4" /> Stop
                   </Button>
                 )}
@@ -228,11 +280,23 @@ export default function VirtualTutor() {
             <div className="aspect-[4/5] w-full overflow-hidden rounded-xl border bg-white relative">
               <div id={containerId} className="absolute inset-0" />
               <div className="absolute left-4 top-4 flex items-center gap-2 rounded-full bg-background/80 px-3 py-1 text-xs backdrop-blur-md border">
-                <span className={"size-2 rounded-full " + (isAgentReady ? "bg-green-500" : "bg-muted")}></span>
+                <span
+                  className={
+                    "size-2 rounded-full " +
+                    (isAgentReady ? "bg-green-500" : "bg-muted")
+                  }
+                ></span>
                 <span>{isAgentReady ? "Ready" : "Loading…"}</span>
               </div>
               <div className="absolute right-4 bottom-4 flex items-center gap-2">
-                <Button size="icon" variant="secondary" className="shadow-md" title="Push-to-talk" onClick={startConversation} disabled={!isAgentReady}>
+                <Button
+                  size="icon"
+                  variant="secondary"
+                  className="shadow-md"
+                  title="Push-to-talk"
+                  onClick={startConversation}
+                  disabled={!isAgentReady}
+                >
                   <Mic className="size-4" />
                 </Button>
               </div>
@@ -250,23 +314,49 @@ export default function VirtualTutor() {
                 <div>
                   <CardTitle>Conversation</CardTitle>
                   <CardDescription>
-                    Type to chat with your tutor. Spoken replies play on the left.
+                    Type to chat with your tutor. Spoken replies play on the
+                    left.
                     {userPreferences && (
                       <span className="ml-2 text-xs text-muted-foreground">
-                        • {userPreferences.voice} • {userPreferences.language} • {userPreferences.speechSpeed}x
+                        • {userPreferences.voice} • {userPreferences.language} •{" "}
+                        {userPreferences.speechSpeed}x
                       </span>
                     )}
                   </CardDescription>
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                <Button variant="ghost" size="icon" onClick={toggleSound} title={soundEnabled ? "Sound on" : "Sound off"} className={soundEnabled ? "text-green-600" : "text-red-600"}>
-                  {soundEnabled ? <Volume2 className="size-4" /> : <VolumeX className="size-4" />}
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={toggleSound}
+                  title={soundEnabled ? "Sound on" : "Sound off"}
+                  className={soundEnabled ? "text-green-600" : "text-red-600"}
+                >
+                  {soundEnabled ? (
+                    <Volume2 className="size-4" />
+                  ) : (
+                    <VolumeX className="size-4" />
+                  )}
                 </Button>
-                <Button variant="ghost" size="icon" onClick={toggleListening} title={listening ? "Stop listening" : "Start listening"}>
-                  {listening ? <MicOff className="size-4" /> : <Mic className="size-4" />}
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={toggleListening}
+                  title={listening ? "Stop listening" : "Start listening"}
+                >
+                  {listening ? (
+                    <MicOff className="size-4" />
+                  ) : (
+                    <Mic className="size-4" />
+                  )}
                 </Button>
-                <Button variant="ghost" size="icon" onClick={resetConversation} title="Reset conversation">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={resetConversation}
+                  title="Reset conversation"
+                >
                   <RotateCcw className="size-4" />
                 </Button>
               </div>
@@ -280,18 +370,26 @@ export default function VirtualTutor() {
               </div>
             ) : (
               messages.map((m) => (
-                <div key={m.id} className={"flex items-start gap-3 " + (m.role === "user" ? "justify-end" : "justify-start") }>
+                <div
+                  key={m.id}
+                  className={
+                    "flex items-start gap-3 " +
+                    (m.role === "user" ? "justify-end" : "justify-start")
+                  }
+                >
                   {m.role === "assistant" && (
                     <div className="mt-1 size-6 shrink-0 rounded-full bg-nova-500/20 text-nova-700 dark:text-nova-200 flex items-center justify-center">
                       <MessageSquare className="size-3" />
                     </div>
                   )}
-                  <div className={
-                    "max-w-[80%] rounded-lg px-3 py-2 text-sm shadow-sm " +
-                    (m.role === "user"
-                      ? "bg-primary text-primary-foreground"
-                      : "bg-muted text-foreground")
-                  }>
+                  <div
+                    className={
+                      "max-w-[80%] rounded-lg px-3 py-2 text-sm shadow-sm " +
+                      (m.role === "user"
+                        ? "bg-primary text-primary-foreground"
+                        : "bg-muted text-foreground")
+                    }
+                  >
                     {m.text}
                   </div>
                   {m.role === "user" && (
@@ -323,7 +421,11 @@ export default function VirtualTutor() {
                   }
                 }}
               />
-              <Button type="submit" disabled={!isAgentReady || input.trim().length === 0} className="gap-2">
+              <Button
+                type="submit"
+                disabled={!isAgentReady || input.trim().length === 0}
+                className="gap-2"
+              >
                 <Send className="size-4" /> Send
               </Button>
             </form>
