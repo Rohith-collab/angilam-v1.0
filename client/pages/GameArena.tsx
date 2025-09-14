@@ -4,7 +4,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Gamepad2,
   Trophy,
@@ -121,37 +120,8 @@ const GameArena = () => {
       color: "from-nova-500 to-nova-600",
       isLocked: false,
     },
-    {
-      id: "accent-arena",
-      title: "Accent Arena",
-      description:
-        "Practice different English accents in this immersive challenge mode.",
-      difficulty: "Hard",
-      players: 1,
-      duration: "8 min",
-      reward: 250,
-      icon: <Volume2 className="h-6 w-6" />,
-      color: "from-cyan-500 to-cyan-600",
-      isLocked: false,
-    },
   ];
 
-  const leaderboard: LeaderboardEntry[] = [
-    { rank: 1, name: "Sarah Chen", score: 15420, avatar: "SC", level: 28 },
-    { rank: 2, name: "Alex Rivera", score: 14850, avatar: "AR", level: 26 },
-    { rank: 3, name: "Emma Watson", score: 14200, avatar: "EW", level: 25 },
-    {
-      rank: 4,
-      name: "You",
-      score: 13950,
-      avatar: currentUser?.displayName?.charAt(0) || "U",
-      level: userLevel,
-      isCurrentUser: true,
-    },
-    { rank: 5, name: "David Kim", score: 13100, avatar: "DK", level: 23 },
-    { rank: 6, name: "Luna Garcia", score: 12800, avatar: "LG", level: 22 },
-    { rank: 7, name: "James Wilson", score: 12450, avatar: "JW", level: 21 },
-  ];
 
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
@@ -1011,83 +981,6 @@ const GameArena = () => {
 
           {/* Leaderboard */}
           <div className="space-y-6">
-            <Card className="bg-card/90 dark:bg-card/80 backdrop-blur-md border-border gaming-card">
-              <CardHeader>
-                <CardTitle className="text-foreground flex items-center">
-                  <Trophy className="h-5 w-5 text-yellow-400 mr-2" />
-                  Global Leaderboard
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                {leaderboard.map((entry, index) => (
-                  <div
-                    key={entry.rank}
-                    className={`flex items-center space-x-3 p-3 rounded-xl transition-all duration-300 ${
-                      entry.isCurrentUser
-                        ? "bg-electric-500/20 border border-electric-500/30 glow-electric"
-                        : "bg-muted/30 hover:bg-muted/50"
-                    }`}
-                    style={{ animationDelay: `${index * 50}ms` }}
-                  >
-                    <div
-                      className={`flex items-center justify-center w-8 h-8 rounded-lg font-bold text-sm ${
-                        entry.rank === 1
-                          ? "bg-yellow-500 text-black"
-                          : entry.rank === 2
-                            ? "bg-gray-300 text-black"
-                            : entry.rank === 3
-                              ? "bg-orange-500 text-white"
-                              : "bg-muted text-muted-foreground"
-                      }`}
-                    >
-                      {entry.rank}
-                    </div>
-
-                    <Avatar className="h-8 w-8">
-                      <AvatarFallback
-                        className={`text-sm font-bold ${
-                          entry.isCurrentUser
-                            ? "bg-electric-500 text-white"
-                            : "bg-muted text-muted-foreground"
-                        }`}
-                      >
-                        {entry.avatar}
-                      </AvatarFallback>
-                    </Avatar>
-
-                    <div className="flex-1 min-w-0">
-                      <p
-                        className={`text-sm font-medium truncate ${
-                          entry.isCurrentUser
-                            ? "text-electric-400"
-                            : "text-foreground"
-                        }`}
-                      >
-                        {entry.name}
-                      </p>
-                      <p className="text-xs text-muted-foreground">
-                        Level {entry.level}
-                      </p>
-                    </div>
-
-                    <div className="text-right">
-                      <p className="text-sm font-bold text-cyan-400">
-                        {entry.score.toLocaleString()}
-                      </p>
-                      <p className="text-xs text-muted-foreground">points</p>
-                    </div>
-                  </div>
-                ))}
-
-                <Button
-                  variant="ghost"
-                  className="w-full text-muted-foreground hover:text-foreground mt-4"
-                >
-                  View Full Leaderboard
-                  <ChevronRight className="h-4 w-4 ml-2" />
-                </Button>
-              </CardContent>
-            </Card>
 
             {/* Daily Challenges */}
             <Card className="bg-card/90 dark:bg-card/80 backdrop-blur-md border-border gaming-card">
@@ -1122,29 +1015,6 @@ const GameArena = () => {
                   </div>
                 </div>
 
-                <div className="p-4 bg-gradient-to-r from-cyber-500/30 dark:from-cyber-500/20 to-green-500/30 dark:to-green-500/20 rounded-xl border border-cyber-500/50 dark:border-cyber-500/30">
-                  <div className="flex items-center justify-between mb-2">
-                    <h3 className="font-semibold text-foreground">
-                      Accent Expert
-                    </h3>
-                    <Badge
-                      variant="outline"
-                      className="bg-cyber-500/30 dark:bg-cyber-500/20 text-cyber-600 dark:text-cyber-400 border-cyber-500/50 dark:border-cyber-500/30"
-                    >
-                      1/5 Complete
-                    </Badge>
-                  </div>
-                  <p className="text-sm text-muted-foreground mb-3">
-                    Master 5 different accents in Accent Arena
-                  </p>
-                  <div className="flex items-center justify-between">
-                    <Progress value={20} className="flex-1 mr-3 h-2" />
-                    <span className="text-xs text-yellow-400 font-medium flex items-center">
-                      <Award className="h-3 w-3 mr-1" />
-                      Badge
-                    </span>
-                  </div>
-                </div>
               </CardContent>
             </Card>
           </div>
