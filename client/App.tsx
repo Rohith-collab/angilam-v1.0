@@ -46,6 +46,7 @@ import GrammarDetective from "./pages/GrammarDetective";
 import SurvivalMode from "./pages/SurvivalMode";
 import JumbledWords from "./pages/JumbledWords";
 import WordBattles from "./pages/WordBattles";
+import VirtualTutor from "./pages/VirtualTutor";
 
 const queryClient = new QueryClient();
 
