@@ -378,6 +378,16 @@ const App = () => (
                     </ProtectedRoute>
                   }
                 />
+                <Route
+                  path="/virtual-tutor"
+                  element={
+                    <ProtectedRoute>
+                      <Layout>
+                        <VirtualTutor />
+                      </Layout>
+                    </ProtectedRoute>
+                  }
+                />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route
                   path="*"
