@@ -1,7 +1,6 @@
 import React, {
   useCallback,
   useEffect,
-  useMemo,
   useRef,
   useState,
 } from "react";
@@ -56,8 +55,8 @@ export default function VirtualTutor() {
 
   // Inject D-ID script
   useEffect(() => {
-    const existing = document.querySelector(
-      `script[src="https://agent.d-id.com/v2/index.js"]`,
+    const existing = document.querySelector<HTMLScriptElement>(
+      `script[src="https://agent.d-id.com/v2/index.js"]`
     );
     if (existing) existing.remove();
 
@@ -69,32 +68,51 @@ export default function VirtualTutor() {
       "Z29vZ2xlLW9hdXRoMnwxMTY0ODc5MTc0ODcwOTE0MjY4ODU6U0VGX0RTOGxrVFFsNUtkTm1RU1dH";
     script.dataset.agentId = "v2_agt_xbPqAw6G";
     script.dataset.targetId = containerId;
+
+    script.onerror = () => {
+      toast({
+        title: "D-ID script failed to load",
+        description: "Check your API key and agent ID.",
+        variant: "destructive",
+      });
+    };
+
     document.body.appendChild(script);
 
+    let attempts = 0;
     pollRef.current = window.setInterval(() => {
+      attempts++;
       if (window.didAgent) {
         setIsAgentReady(true);
-        if (pollRef.current) window.clearInterval(pollRef.current);
+        if (pollRef.current) clearInterval(pollRef.current);
         pollRef.current = null;
+      } else if (attempts > 20) { // ~6s timeout
+        if (pollRef.current) clearInterval(pollRef.current);
+        pollRef.current = null;
+        toast({
+          title: "Agent not responding",
+          description: "Please verify your agent deployment.",
+          variant: "destructive",
+        });
       }
     }, 300);
 
     return () => {
-      if (pollRef.current) window.clearInterval(pollRef.current);
+      if (pollRef.current) clearInterval(pollRef.current);
       pollRef.current = null;
       script.remove();
     };
-  }, []);
+  }, [toast]);
 
-  // Load user prefs
+  // Load saved preferences
   useEffect(() => {
     try {
       const saved = localStorage.getItem("aangilam_preferences");
       if (saved) setUserPreferences(JSON.parse(saved));
-    } catch { }
+    } catch {}
   }, []);
 
-  // Apply mute/volume to avatar video/audio
+  // Apply mute/volume to avatar media
   useEffect(() => {
     const root = document.getElementById(containerId);
     if (!root) return;
@@ -103,7 +121,7 @@ export default function VirtualTutor() {
       try {
         m.muted = !soundEnabled || muted;
         if (soundEnabled && !muted) m.volume = 1;
-      } catch { }
+      } catch {}
     });
   }, [soundEnabled, muted, isAgentReady]);
 
@@ -112,7 +130,7 @@ export default function VirtualTutor() {
     if (!agent) {
       toast({
         title: "Agent not ready",
-        description: "Please wait a moment.",
+        description: "Wait until the agent is fully loaded.",
         variant: "destructive",
       });
       return;
@@ -125,12 +143,12 @@ export default function VirtualTutor() {
         {
           id: crypto.randomUUID(),
           role: "assistant",
-          text: "Voice session started. You can speak to your tutor now.",
+          text: "Voice session started. You can speak now.",
         },
       ]);
     } catch (e) {
       toast({
-        title: "Could not start conversation",
+        title: "Failed to start conversation",
         description: String(e),
         variant: "destructive",
       });
@@ -181,7 +199,7 @@ export default function VirtualTutor() {
       if (!agent) {
         toast({
           title: "Agent not ready",
-          description: "Please wait a moment.",
+          description: "Wait until the agent is ready.",
           variant: "destructive",
         });
         return;
@@ -198,18 +216,18 @@ export default function VirtualTutor() {
           {
             id: crypto.randomUUID(),
             role: "assistant",
-            text: "Responding… check the avatar for the spoken answer.",
+            text: "Responding… check the avatar for the spoken reply.",
           },
         ]);
       } catch (e) {
         toast({
-          title: "Send failed",
+          title: "Message failed",
           description: String(e),
           variant: "destructive",
         });
       }
     },
-    [input, toast],
+    [input, toast]
   );
 
   return (
@@ -220,7 +238,9 @@ export default function VirtualTutor() {
           <CardHeader>
             <div className="flex items-center justify-between">
               <div>
-                <CardTitle className="text-2xl font-semibold">Human Tutor</CardTitle>
+                <CardTitle className="text-2xl font-semibold">
+                  Human Tutor
+                </CardTitle>
                 <CardDescription>
                   Practice speaking with real-time feedback
                 </CardDescription>
@@ -232,7 +252,11 @@ export default function VirtualTutor() {
                   onClick={() => setMuted((m) => !m)}
                   aria-label={muted ? "Unmute" : "Mute"}
                 >
-                  {muted ? <VolumeX className="size-4" /> : <Volume2 className="size-4" />}
+                  {muted ? (
+                    <VolumeX className="size-4" />
+                  ) : (
+                    <Volume2 className="size-4" />
+                  )}
                 </Button>
                 {!isConversing ? (
                   <Button
@@ -256,14 +280,16 @@ export default function VirtualTutor() {
           </CardHeader>
           <CardContent>
             <div
-              className={`aspect-[4/5] w-full overflow-hidden rounded-xl border relative ${isAgentReady ? "bg-white" : "bg-black"
-                }`}
+              className={`aspect-[4/5] w-full overflow-hidden rounded-xl border relative ${
+                isAgentReady ? "bg-white" : "bg-black"
+              }`}
             >
               <div id={containerId} className="absolute inset-0" />
               <div className="absolute left-4 top-4 flex items-center gap-2 rounded-full bg-background/80 px-3 py-1 text-xs backdrop-blur-md border">
                 <span
-                  className={`size-2 rounded-full ${isAgentReady ? "bg-green-500" : "bg-muted"
-                    }`}
+                  className={`size-2 rounded-full ${
+                    isAgentReady ? "bg-green-500" : "bg-muted"
+                  }`}
                 />
                 <span>{isAgentReady ? "Ready" : "Loading…"}</span>
               </div>
@@ -291,7 +317,8 @@ export default function VirtualTutor() {
                 <div>
                   <CardTitle>Conversation</CardTitle>
                   <CardDescription>
-                    Type to chat with your tutor. Spoken replies play on the left.
+                    Type to chat with your tutor. Spoken replies play on the
+                    left.
                     {userPreferences && (
                       <span className="ml-2 text-xs text-muted-foreground">
                         • {userPreferences.voice} • {userPreferences.language} •{" "}
@@ -309,7 +336,11 @@ export default function VirtualTutor() {
                   title={soundEnabled ? "Sound on" : "Sound off"}
                   className={soundEnabled ? "text-green-600" : "text-red-600"}
                 >
-                  {soundEnabled ? <Volume2 className="size-4" /> : <VolumeX className="size-4" />}
+                  {soundEnabled ? (
+                    <Volume2 className="size-4" />
+                  ) : (
+                    <VolumeX className="size-4" />
+                  )}
                 </Button>
                 <Button
                   variant="ghost"
@@ -317,7 +348,11 @@ export default function VirtualTutor() {
                   onClick={toggleListening}
                   title={listening ? "Stop listening" : "Start listening"}
                 >
-                  {listening ? <MicOff className="size-4" /> : <Mic className="size-4" />}
+                  {listening ? (
+                    <MicOff className="size-4" />
+                  ) : (
+                    <Mic className="size-4" />
+                  )}
                 </Button>
                 <Button
                   variant="ghost"
@@ -340,8 +375,9 @@ export default function VirtualTutor() {
               messages.map((m) => (
                 <div
                   key={m.id}
-                  className={`flex items-start gap-3 ${m.role === "user" ? "justify-end" : "justify-start"
-                    }`}
+                  className={`flex items-start gap-3 ${
+                    m.role === "user" ? "justify-end" : "justify-start"
+                  }`}
                 >
                   {m.role === "assistant" && (
                     <div className="mt-1 size-6 shrink-0 rounded-full bg-nova-500/20 text-nova-700 flex items-center justify-center">
@@ -349,10 +385,11 @@ export default function VirtualTutor() {
                     </div>
                   )}
                   <div
-                    className={`max-w-[80%] rounded-lg px-3 py-2 text-sm shadow-sm ${m.role === "user"
+                    className={`max-w-[80%] rounded-lg px-3 py-2 text-sm shadow-sm ${
+                      m.role === "user"
                         ? "bg-primary text-primary-foreground"
                         : "bg-muted text-foreground"
-                      }`}
+                    }`}
                   >
                     {m.text}
                   </div>
